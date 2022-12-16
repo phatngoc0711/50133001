@@ -1,0 +1,381 @@
+                                                                SELECT
+                                                                    DAT.KAIS
+                                                                    ,KAI.RYAKU
+@KOJ_SHUKEI_OPT@ =0                                                 ,'         0'
+@KOJ_SHUKEI_OPT@ =1                                                 ,KOJ.BMN_UW
+@KOJ_SHUKEI_OPT@ =2                                                 ,KJU.BMN_UW
+@KOJ_SHUKEI_OPT@ =0                                                 ,NULL
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                          ,BMU2.RYAKU
+                                                                    ,DAT.SKOJ
+                                                                    ,SKO.RYAKU
+@KOJ_SHUKEI_OPT@ =0                                                                 ,NULL
+@KOJ_SHUKEI_OPT@ =0                                                                 ,NULL
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                  ,DAT.KOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                  ,KOJ.RYAKU
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                  ,NULL
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                  ,NULL
+@KOJ_SHUKEI_OPT@ =2                                                                 ,DAT.KOJ_UW
+@KOJ_SHUKEI_OPT@ =2                                                                 ,KJU.RYAKU
+                                                                    ,DAT.KAIS
+                                                                    ,KAI.RYAKU
+                                                                    ,DAT.BMN_UW
+                                                                    ,BMU.RYAKU
+                                                                    ,DAT.SKOJ
+                                                                    ,SKO.RYAKU
+                                                                    ,DAT.KOJ
+                                                                    ,KOJ.RYAKU
+                                                                    ,DAT.KOJ_UW
+                                                                    ,KJU.RYAKU
+                                                                    ,DAT.YOUSO
+                                                                    ,YOU.RYAKU
+@KOJ_SHUKEI_OPT@ =0                                                                 ,decode(DAT.SKOJ,NULL,'zzzzzzzzzz',LPAD(TRIM(DAT.SKOJ),10,'0')) ||decode(DAT.YOUSO,NULL,'999999999',LPAD(DAT.YOUSO,9,'0')) ||DAT.SORT_KBN
+@KOJ_SHUKEI_OPT@ =1                                                                 ,decode(DAT.KOJ,NULL,'zzzzzzzzzz',LPAD(TRIM(DAT.KOJ),10,'0')) ||decode(DAT.YOUSO,NULL,'999999999',LPAD(DAT.YOUSO,9,'0')) ||DAT.SORT_KBN
+@KOJ_SHUKEI_OPT@ =2                                                                 ,decode(DAT.KOJ,NULL,'zzzzzzzzzz',LPAD(TRIM(DAT.KOJ),10,'0')) ||decode(DAT.KOJ_UW,NULL,'zzzzzzzzzz',LPAD(TRIM(DAT.KOJ_UW),10,'0')) ||decode(DAT.YOUSO,NULL,'999999999',LPAD(DAT.YOUSO,9,'0')) ||DAT.SORT_KBN
+                                                                    ,DAT.DDATE
+                                                                    ,DAT.DNO
+                                                                    ,DAT.GNO
+                                                                    ,DAT.GYS
+                                                                    ,TOR.RYAKU
+                                                                    ,DAT.TEKI
+                                                                    ,DAT.KARI_KIN
+                                                                    ,DAT.KASHI_KIN
+                                                                    ,DAT.KIN
+                                                                    ,DAT.ZEI
+                                                                    ,DAT.KEI
+                                                                    ,DAT.EDIT_KBN
+                                                                FROM
+                                                                (
+                                                                /*前月まで累計*/
+                                                                        SELECT
+                                                                            SUB.KAIS
+                                                                            ,SUB.BMN_UW
+                                                                            ,SUB.SKOJ
+                                                                            ,SUB.KOJ
+                                                                            ,SUB.KOJ_UW
+                                                                            ,SUB.YOUSO
+                                                                            ,1 SORT_KBN
+                                                                            ,SUB.DDATE
+                                                                            ,SUB.DNO
+                                                                            ,SUB.GNO
+                                                                            ,SUB.GYS
+                                                                            ,SUB.TEKI
+                                                                            ,SUM(SUB.KARI_KIN) KARI_KIN
+                                                                            ,SUM(SUB.KASHI_KIN) KASHI_KIN
+                                                                            ,SUM(SUB.KIN) KIN
+                                                                            ,SUM(SUB.ZEI) ZEI
+                                                                            ,SUM(SUB.KEI) KEI
+                                                                            ,9 EDIT_KBN
+                                                                        FROM
+                                                                        (
+                                                                            SELECT
+                                                                                FKZ.KAIS        KAIS
+                                                                                ,'         0'        BMN_UW
+                                                                                ,WMS.SKOJ        SKOJ
+@KOJ_SHUKEI_OPT@ =0                                                                             ,NULL        KOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,FKZ.KOJ        KOJ
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                              ,NULL        KOJ_UW
+@KOJ_SHUKEI_OPT@ =2                                                                             ,FKZ.KOJ_UW        KOJ_UW
+                                                                                ,MYS.CODE    YOUSO
+                                                                                ,TO_DATE(NULL)    DDATE
+                                                                                ,TO_NUMBER(NULL)    DNO
+                                                                                ,TO_NUMBER(NULL)    GNO
+                                                                                ,NULL            GYS
+                                                                                ,'　　　　　　　　　　前月迄累計'            TEKI
+                                                                                ,SUM(DECODE(FKZ.TS_KBN,1,FKZ.KIN,0))    KARI_KIN--,SUM(FKZ.KARI_KIN)    KARI_KIN
+                                                                                ,SUM(DECODE(FKZ.TS_KBN,2,FKZ.KIN,0))    KASHI_KIN--,SUM(FKZ.KASHI_KIN)    KASHI_KIN
+                                                                                ,0                    KIN
+                                                                                ,0                    ZEI
+                                                                                ,0                    KEI
+                                                                            FROM
+                                                                                D_SHIWAKE_UW_GEN  FKZ  --F_KMK_ZAN_UW FKZ
+                                                                                ,M_YOUSO MYS
+                                                                                ,W_MASTER WMS
+                                                                            WHERE
+                                                                                ((FKZ.KMK = MYS.KMK_MISEI
+                                                                                AND FKZ.HOJ = MYS.HOJ_MISEI)
+                                                                                OR (FKZ.KMK = MYS.KMK_KANSEI))
+                                                                                AND    FKZ.NENGETU < @NENGETU_FROM@
+                                                                                AND    MYS.CODE @YOUSO_DOM@
+                                                                                AND    FKZ.TOR @TOR_DOM@
+                                                                                AND    WMS.USER_NO   =  @SYSUSERNO@
+                                                                                AND    WMS.SESSION_ID  =  @SESSION_ID@
+                                                                                AND    WMS.PROGRAM_CODE =  @PROGRAM_CODE@
+                                                                                AND    FKZ.KAIS = WMS.KAIS
+                                                                                AND    FKZ.KOJ = WMS.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             AND    FKZ.KOJ_UW = WMS.KOJ_UW
+                                                                            GROUP BY
+                                                                                FKZ.KAIS
+                                                                                ,WMS.SKOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,FKZ.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             ,FKZ.KOJ_UW
+                                                                                ,MYS.CODE
+                                                                            UNION ALL
+                                                                            SELECT
+                                                                                GEN.KAIS        KAIS
+                                                                                ,'         0'        BMN_UW
+                                                                                ,WMS.SKOJ        SKOJ
+@KOJ_SHUKEI_OPT@ =0                                                                             ,NULL        KOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,GEN.KOJ        KOJ
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                              ,NULL        KOJ_UW
+@KOJ_SHUKEI_OPT@ =2                                                                             ,GEN.KOJ_UW        KOJ_UW
+                                                                                ,GEN.YOUSO        YOUSO
+                                                                                ,TO_DATE(NULL)    DDATE
+                                                                                ,TO_NUMBER(NULL)    DNO
+                                                                                ,TO_NUMBER(NULL)    GNO
+                                                                                ,NULL            GYS
+                                                                                ,'　　　　　　　　　　前月迄累計'            TEKI
+                                                                                ,0                KARI_KIN
+                                                                                ,0                KASHI_KIN
+                                                                                ,SUM(MISEI_KIN + KANSEI_KIN)    KIN
+                                                                                ,SUM(MISEI_ZEI + KANSEI_ZEI)    ZEI
+                                                                                ,SUM(MISEI_KIN + KANSEI_KIN + MISEI_ZEI + KANSEI_ZEI)    KEI
+                                                                            FROM
+                                                                                F_GEN GEN
+                                                                                ,W_MASTER WMS
+                                                                            WHERE
+                                                                                GEN.NENGETU <　@NENGETU_FROM@
+                                                                                AND    GEN.YOUSO @YOUSO_DOM@
+                                                                                AND    GEN.GYS @TOR_DOM@
+                                                                                AND    WMS.USER_NO   =  @SYSUSERNO@
+                                                                                AND    WMS.SESSION_ID  =  @SESSION_ID@
+                                                                                AND    WMS.PROGRAM_CODE =  @PROGRAM_CODE@
+                                                                                AND    GEN.KAIS = WMS.KAIS
+                                                                                AND    GEN.KOJ = WMS.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             AND    GEN.KOJ_UW = WMS.KOJ_UW
+                                                                            GROUP BY
+                                                                                GEN.KAIS
+                                                                                ,WMS.SKOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,GEN.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             ,GEN.KOJ_UW
+                                                                                ,GEN.YOUSO
+                                                                        ) SUB
+                                                                        GROUP BY
+                                                                            SUB.KAIS
+                                                                            ,SUB.BMN_UW
+`                                                                           ,SUB.SKOJ
+                                                                            ,SUB.KOJ
+                                                                            ,SUB.KOJ_UW
+                                                                            ,SUB.YOUSO
+                                                                            ,SUB.DDATE
+                                                                            ,SUB.DNO
+                                                                            ,SUB.GNO
+                                                                            ,SUB.GYS
+                                                                            ,SUB.TEKI
+                                                                    UNION ALL
+                                                                /*仕訳明細*/
+                                                                        SELECT
+                                                                            SUG.KAIS
+                                                                            ,SUG.BMN_UW
+                                                                            ,WMS.SKOJ
+                                                                            ,SUG.KOJ
+                                                                            ,SUG.KOJ_UW
+                                                                            ,SUG.YOUSO
+                                                                            ,2 SORT_KBN
+                                                                            ,SUG.DDATE
+                                                                            ,SUG.DNO
+                                                                            ,SUG.GNO
+                                                                            ,SUG.TOR GYS
+                                                                            ,SUG.TEKI_NAME TEKI
+                                                                            ,DECODE(SUG.TS_KBN,1,SUG.KIN,0) KARI_KIN
+                                                                            ,DECODE(SUG.TS_KBN,2,SUG.KIN,0) KASHI_KIN
+                                                                            ,DECODE(SUG.TS_KBN,1,SUG.KIN,SUG.KIN*-1) KIN
+                                                                            ,DECODE(SUG.TS_KBN,1,SUG.ZEI,SUG.ZEI*-1) ZEI
+                                                                            ,DECODE(SUG.TS_KBN,1,SUG.KIN+SUG.ZEI,(SUG.KIN+SUG.ZEI)*-1) KEI
+                                                                            ,0 EDIT_KBN
+                                                                        FROM
+                                                                            D_SHIWAKE_UW_GEN SUG
+                                                                                ,W_MASTER WMS
+                                                                        WHERE
+                                                                            SUG.NENGETU @NENGETU_DOM@
+                                                                                AND    SUG.YOUSO @YOUSO_DOM@
+                                                                                AND    SUG.TOR @TOR_DOM@
+                                                                                AND    WMS.USER_NO   =  @SYSUSERNO@
+                                                                                AND    WMS.SESSION_ID  =  @SESSION_ID@
+                                                                                AND    WMS.PROGRAM_CODE =  @PROGRAM_CODE@
+                                                                                AND    SUG.KAIS = WMS.KAIS
+                                                                                AND    SUG.KOJ = WMS.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             AND    SUG.KOJ_UW = WMS.KOJ_UW
+                                                                    UNION ALL
+                                                                /*科目計*/
+                                                                        SELECT
+                                                                            SUB.KAIS
+                                                                            ,SUB.BMN_UW
+                                                                            ,SUB.SKOJ
+                                                                            ,SUB.KOJ
+                                                                            ,SUB.KOJ_UW
+                                                                            ,SUB.YOUSO
+                                                                            ,3 SORT_KBN
+                                                                            ,SUB.DDATE
+                                                                            ,SUB.DNO
+                                                                            ,SUB.GNO
+                                                                            ,SUB.GYS
+                                                                            ,SUB.TEKI
+                                                                            ,SUM(SUB.KARI_KIN) KARI_KIN
+                                                                            ,SUM(SUB.KASHI_KIN) KASHI_KIN
+                                                                            ,SUM(SUB.KIN) KIN
+                                                                            ,SUM(SUB.ZEI) ZEI
+                                                                            ,SUM(SUB.KEI) KEI
+                                                                            ,9 EDIT_KBN
+                                                                        FROM
+                                                                        (
+                                                                            SELECT
+                                                                                FKZ.KAIS        KAIS
+                                                                                ,'         0'        BMN_UW
+                                                                                ,WMS.SKOJ        SKOJ
+@KOJ_SHUKEI_OPT@ =0                                                                             ,NULL        KOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,FKZ.KOJ        KOJ
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                              ,NULL        KOJ_UW
+@KOJ_SHUKEI_OPT@ =2                                                                             ,FKZ.KOJ_UW        KOJ_UW
+                                                                                ,MYS.CODE    YOUSO
+                                                                                ,TO_DATE(NULL)    DDATE
+                                                                                ,TO_NUMBER(NULL)    DNO
+                                                                                ,TO_NUMBER(NULL)    GNO
+                                                                                ,NULL            GYS
+                                                                                ,'　　　　　　　　　　科目計'            TEKI
+                                                                                ,SUM(DECODE(FKZ.TS_KBN,1,FKZ.KIN,0))    KARI_KIN--,SUM(FKZ.KARI_KIN)    KARI_KIN
+                                                                                ,SUM(DECODE(FKZ.TS_KBN,2,FKZ.KIN,0))    KASHI_KIN--,SUM(FKZ.KASHI_KIN)    KASHI_KIN
+                                                                                ,0                    KIN
+                                                                                ,0                    ZEI
+                                                                                ,0                    KEI
+                                                                            FROM
+                                                                                D_SHIWAKE_UW_GEN FKZ  --F_KMK_ZAN_UW FKZ
+                                                                                ,M_YOUSO MYS
+                                                                                ,W_MASTER WMS
+                                                                            WHERE
+                                                                                ((FKZ.KMK = MYS.KMK_MISEI
+                                                                                AND FKZ.HOJ = MYS.HOJ_MISEI)
+                                                                                OR (FKZ.KMK = MYS.KMK_KANSEI))
+                                                                                /*条件指定 NENGETU、YOUSO、GYS*/
+                                                                                AND    FKZ.NENGETU <= @NENGETU_TO@
+                                                                                AND    MYS.CODE @YOUSO_DOM@
+                                                                                AND    FKZ.TOR @TOR_DOM@
+                                                                                AND    WMS.USER_NO   =  @SYSUSERNO@
+                                                                                AND    WMS.SESSION_ID  =  @SESSION_ID@
+                                                                                AND    WMS.PROGRAM_CODE =  @PROGRAM_CODE@
+                                                                                AND    FKZ.KAIS = WMS.KAIS
+                                                                                AND    FKZ.KOJ = WMS.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             AND    FKZ.KOJ_UW = WMS.KOJ_UW
+                                                                            GROUP BY
+                                                                                FKZ.KAIS
+                                                                                ,WMS.SKOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,FKZ.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             ,FKZ.KOJ_UW
+                                                                                ,MYS.CODE
+                                                                            UNION ALL
+                                                                            SELECT
+                                                                                GEN.KAIS        KAIS
+                                                                                ,'         0'        BMN_UW
+                                                                                ,WMS.SKOJ        SKOJ
+@KOJ_SHUKEI_OPT@ =0                                                                             ,NULL        KOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,GEN.KOJ        KOJ
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                              ,NULL        KOJ_UW
+@KOJ_SHUKEI_OPT@ =2                                                                             ,GEN.KOJ_UW        KOJ_UW
+                                                                                ,GEN.YOUSO        YOUSO
+                                                                                ,TO_DATE(NULL)    DDATE
+                                                                                ,TO_NUMBER(NULL)    DNO
+                                                                                ,TO_NUMBER(NULL)    DNO
+                                                                                ,NULL            GYS
+                                                                                ,'　　　　　　　　　　科目計'            TEKI
+                                                                                ,0                KARI_KIN
+                                                                                ,0                KASHI_KIN
+                                                                                ,SUM(MISEI_KIN + KANSEI_KIN)    KIN
+                                                                                ,SUM(MISEI_ZEI + KANSEI_ZEI)    ZEI
+                                                                                ,SUM(MISEI_KIN + KANSEI_KIN + MISEI_ZEI + KANSEI_ZEI)    KEI
+                                                                            FROM
+                                                                                F_GEN GEN
+                                                                                ,W_MASTER WMS
+                                                                            WHERE
+                                                                                GEN.NENGETU <=　@NENGETU_TO@
+                                                                                AND    GEN.YOUSO @YOUSO_DOM@
+                                                                                AND    GEN.GYS @TOR_DOM@
+                                                                                AND    WMS.USER_NO   =  @SYSUSERNO@
+                                                                                AND    WMS.SESSION_ID  =  @SESSION_ID@
+                                                                                AND    WMS.PROGRAM_CODE =  @PROGRAM_CODE@
+                                                                                AND    GEN.KAIS = WMS.KAIS
+                                                                                AND    GEN.KOJ = WMS.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             AND    GEN.KOJ_UW = WMS.KOJ_UW
+                                                                            GROUP BY
+                                                                                GEN.KAIS
+                                                                                ,WMS.SKOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                              ,GEN.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             ,GEN.KOJ_UW
+                                                                                ,GEN.YOUSO
+                                                                        ) SUB
+                                                                        GROUP BY
+                                                                            SUB.KAIS
+                                                                            ,SUB.BMN_UW
+                                                                            ,SUB.SKOJ
+                                                                            ,SUB.KOJ
+                                                                            ,SUB.KOJ_UW
+                                                                            ,SUB.YOUSO
+                                                                            ,SUB.DDATE
+                                                                            ,SUB.DNO
+                                                                            ,SUB.GNO
+                                                                            ,SUB.GYS
+                                                                            ,SUB.TEKI
+                                                                    UNION ALL
+                                                                /*工事計*/
+                                                                        SELECT
+                                                                            GEN.KAIS
+                                                                            ,'         0'        BMN_UW
+                                                                            ,WMS.SKOJ        SKOJ
+@KOJ_SHUKEI_OPT@ =0                                                                         ,NULL        KOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                          ,GEN.KOJ        KOJ
+@KOJ_SHUKEI_OPT@ =0 OR @KOJ_SHUKEI_OPT@ =1                                                                          ,NULL        KOJ_UW
+@KOJ_SHUKEI_OPT@ =2                                                                         ,GEN.KOJ_UW        KOJ_UW
+                                                                            ,MAX(GEN.YOUSO) YOUSO --,TO_NUMBER(NULL) YOUSO
+                                                                            ,9 SORT_KBN
+                                                                            ,TO_DATE(NULL) DDATE
+                                                                            ,TO_NUMBER(NULL) DNO
+                                                                            ,TO_NUMBER(NULL) GNO
+                                                                            ,NULL GYS
+                                                                            ,'　　　　　　　　　　工事計' TEKI
+                                                                            ,TO_NUMBER(NULL) KARI_KIN
+                                                                            ,TO_NUMBER(NULL) KASHI_KIN
+                                                                            ,SUM(GEN.MISEI_KIN+GEN.KANSEI_KIN) KIN
+                                                                            ,SUM(GEN.MISEI_ZEI+GEN.KANSEI_ZEI) ZEI
+                                                                            ,SUM(GEN.MISEI_KIN+GEN.KANSEI_KIN+GEN.MISEI_ZEI+GEN.KANSEI_ZEI) KEI
+                                                                            ,9 EDIT_KBN
+                                                                        FROM
+                                                                            F_GEN GEN
+                                                                            ,W_MASTER WMS
+                                                                        WHERE
+                                                                                GEN.NENGETU <=　@NENGETU_TO@
+                                                                                AND    GEN.YOUSO @YOUSO_DOM@
+                                                                                AND    GEN.GYS @TOR_DOM@
+                                                                                AND    WMS.USER_NO   =  @SYSUSERNO@
+                                                                                AND    WMS.SESSION_ID  =  @SESSION_ID@
+                                                                                AND    WMS.PROGRAM_CODE =  @PROGRAM_CODE@
+                                                                                AND    GEN.KAIS = WMS.KAIS
+                                                                                AND    GEN.KOJ = WMS.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                             AND    GEN.KOJ_UW = WMS.KOJ_UW
+                                                                        GROUP BY
+                                                                            GEN.KAIS
+                                                                            ,WMS.SKOJ
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                          ,GEN.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                         ,GEN.KOJ_UW
+                                                                    ) DAT
+                                                                    ,M_SKOJ SKO
+                                                                    ,M_KOJ KOJ
+                                                                    ,M_KOJ_UW KJU
+                                                                    ,M_BMN_UW BMU
+@KOJ_SHUKEI_OPT@ =1 OR @KOJ_SHUKEI_OPT@ =2                                                                  ,M_BMN_UW BMU2
+                                                                    ,M_TOR TOR
+                                                                    ,M_YOUSO YOU
+                                                                    ,M_KAIS KAI
+                                                                WHERE
+                                                                    DAT.KOJ = KOJ.CODE(+)
+                                                                    AND    DAT.KOJ = KJU.KOJ(+)
+                                                                    AND    DAT.KOJ_UW = KJU.CODE(+)
+@KOJ_SHUKEI_OPT@ =2                                                                 AND    DAT.KOJ = KJU.KOJ
+@KOJ_SHUKEI_OPT@ =2                                                                 AND    DAT.KOJ_UW = KJU.CODE
+                                                                    AND    DAT.BMN_UW = BMU.CODE(+)
+@KOJ_SHUKEI_OPT@ =1                                                                 AND    KOJ.BMN_UW = BMU2.CODE(+)
+@KOJ_SHUKEI_OPT@ =2                                                                 AND    KJU.BMN_UW = BMU2.CODE(+)
+                                                                    AND    DAT.GYS = TOR.CODE(+)
+                                                                    AND    DAT.YOUSO = YOU.CODE(+)
+                                                                    AND    DAT.SKOJ = SKO.CODE(+)
+                                                                    AND    DAT.KAIS = KAI.CODE(+)
+@TOUGETU_HASSEI_OPT@ =1 AND @KOJ_SHUKEI_OPT@ =0                                                                 AND    EXISTS(SELECT 'X' DUMMY FROM D_SHIWAKE_UW_GEN DSG ,M_KOJ KOJ WHERE DAT.SKOJ = KOJ.SKOJ AND KOJ.CODE = DSG.KOJ AND DSG.NENGETU @NENGETU_DOM@)
+@TOUGETU_HASSEI_OPT@ =1 AND @KOJ_SHUKEI_OPT@ =1                                                                 AND    EXISTS(SELECT 'X' DUMMY FROM D_SHIWAKE_UW_GEN DSG WHERE DAT.KOJ = DSG.KOJ AND DSG.NENGETU @NENGETU_DOM@)
+@TOUGETU_HASSEI_OPT@ =1 AND @KOJ_SHUKEI_OPT@ =2                                                                 AND    EXISTS(SELECT 'X' DUMMY FROM D_SHIWAKE_UW_GEN DSG WHERE DAT.KOJ = DSG.KOJ AND DAT.KOJ_UW = DSG.KOJ_UW AND DSG.NENGETU @NENGETU_DOM@)
