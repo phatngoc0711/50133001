@@ -1,0 +1,8 @@
+            xSqlTxtSelect.AppendLine($"    WHERE")
+
+            xSqlTxtSelect.AppendLine($"                FKZ.NENGETU < @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                AND MYS.CODE @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND FKZ.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
