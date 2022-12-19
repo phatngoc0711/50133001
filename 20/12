@@ -1,0 +1,2209 @@
+Imports System
+Imports System.Data.Common
+Imports System.Data
+Imports System.Text
+Imports SiU.Process.WebService.Entities.Windows.ALL
+Imports SiU.Process.WebService.Data.Windows.ALL
+Imports SiU.Process.WebService
+Namespace Data.Windows.ALL
+
+    <AlTKyotuPGRepository>
+    Public Class AlTKyotuPG501033001Repository
+        Inherits AlTKyotuPG127000Repository
+
+        Public Sub New(connectionFactory As Func(Of DbConnection))
+            MyBase.New(connectionFactory)
+        End Sub
+
+        Public Function PG501033001(condition As AlTKyotuGenkaConditionEntity) As DataSet
+
+            '' 使用するワークテーブルの切り替え
+            W_BMN_TableType = WorkTableTypes.TemporaryTable
+            W_EIGYO_BMN_TableType = WorkTableTypes.TemporaryTable
+            W_MASTER_TableType = WorkTableTypes.TemporaryTable
+            W_KOJHEAD_TableType = WorkTableTypes.TemporaryTable
+            W_CALCDATA1_TableType = WorkTableTypes.TemporaryTable
+            W_CALCDATA2_TableType = WorkTableTypes.TemporaryTable
+            W_CALCDATA3_TableType = WorkTableTypes.TemporaryTable
+            '' W_COLHEAD は、後で使用するため一時テーブルにはできないので値を変更できません。
+            '' W_COLHEAD_TableType = WorkTableTypes.WorkTable
+
+            Using connection = _connectionFactory()
+
+                Dim xSqlTxt = New StringBuilder()
+
+                xSqlTxt.AppendLine("--" & Reflection.MethodBase.GetCurrentMethod.Name & "ResultId" & If(condition.ResultId Is Nothing, "", condition.ResultId.ToString) & "TestId" & If(condition.TestId Is Nothing, "", condition.TestId.ToString))
+                xSqlTxt.AppendLine(InitializeWorkTableSql())
+
+                xSqlTxt.AppendLine(PG127000Eda10_DELETE_W_BMN_SQL(condition))               'PG501033001Eda10
+                xSqlTxt.AppendLine(PG127000Eda11_DELETE_W_EIGYO_BMN_SQL(condition))         'PG501033001Eda11
+                xSqlTxt.AppendLine(PG127000Eda20_INSERT_W_BMN_SQL(condition))               'PG501033001Eda20
+                xSqlTxt.AppendLine(PG127000Eda21_INSERT_W_EIGYO_BMN_SQL(condition))         'PG501033001Eda21
+                xSqlTxt.AppendLine(PG127000Eda30_DELETE_W_MASTER_SQL(condition))            'PG501033001Eda30
+                xSqlTxt.AppendLine(PG127000Eda40_INSERT_W_MASTER_SQL(condition))            'PG501033001Eda40
+                xSqlTxt.AppendLine(PG127000Eda50_DELETE_W_KOJHEAD_SQL(condition))           'PG501033001Eda50
+                xSqlTxt.AppendLine(PG127000Eda60_INSERT_W_KOJHEAD_SQL(condition))           'PG501033001Eda60
+                xSqlTxt.AppendLine(PG127000Eda70_DELETE_W_CALCDATA1_SQL(condition))         'PG501033001Eda70
+                xSqlTxt.AppendLine(PG501033001Eda80_INSERT_W_CALCDATA1_SQL(condition))
+                xSqlTxt.AppendLine(PG127000Eda90_DELETE_W_CALCDATA2_SQL(condition))         'PG501033001Eda90
+                xSqlTxt.AppendLine(PG501033001Eda100_INSERT_W_CALCDATA2_SQL(condition))
+                xSqlTxt.AppendLine(PG127000Eda110_DELETE_W_CALCDATA3_SQL(condition))        'PG501033001Eda110
+                xSqlTxt.AppendLine(PG501033001Eda120_INSERT_W_CALCDATA3_SQL(condition))
+                xSqlTxt.AppendLine(PG127000Eda130_DELETE_W_COLHEAD_SQL(condition))          'PG501033001Eda130
+                xSqlTxt.AppendLine(PG501033001Eda140_INSERT_W_COLHEAD_SQL(condition))
+
+                xSqlTxt.AppendLine(PG501033001Eda150_SELECT_SQL(condition))
+
+                xSqlTxt.AppendLine(PG127000Eda10_DELETE_W_BMN_SQL(condition))               'PG501033001Eda160
+                xSqlTxt.AppendLine(PG127000Eda11_DELETE_W_EIGYO_BMN_SQL(condition))         'PG501033001Eda161
+                xSqlTxt.AppendLine(PG127000Eda30_DELETE_W_MASTER_SQL(condition))            'PG501033001Eda170
+                xSqlTxt.AppendLine(PG127000Eda50_DELETE_W_KOJHEAD_SQL(condition))           'PG501033001Eda180
+                xSqlTxt.AppendLine(PG127000Eda70_DELETE_W_CALCDATA1_SQL(condition))         'PG501033001Eda190
+                xSqlTxt.AppendLine(PG127000Eda90_DELETE_W_CALCDATA2_SQL(condition))         'PG501033001Eda200
+                xSqlTxt.AppendLine(PG127000Eda110_DELETE_W_CALCDATA3_SQL(condition))        'PG501033001Eda210
+
+                Return connection.ExecuteDataSet(
+                                  xSqlTxt.ToString(),
+                                  commandType:=CommandType.Text)
+
+            End Using
+
+        End Function
+
+        Public Function PG501033001Eda80_INSERT_W_CALCDATA1_SQL(condition As AlTKyotuGenkaConditionEntity) As String
+
+            Dim xSqlTxt = New StringBuilder()
+
+            xSqlTxt.AppendLine("--" & System.Reflection.MethodBase.GetCurrentMethod.Name & "ResultId" & If(condition.ResultId Is Nothing, "", condition.ResultId.ToString) & "TestId" & If(condition.TestId Is Nothing, "", condition.TestId.ToString))
+            xSqlTxt.AppendLine($"INSERT {W_CALCDATA1}")
+            xSqlTxt.AppendLine($"(")
+            xSqlTxt.AppendLine($"  USER_NO")
+            xSqlTxt.AppendLine($", SESSION_ID")
+            xSqlTxt.AppendLine($", PROGRAM_CODE")
+            xSqlTxt.AppendLine($", DATE1")
+            xSqlTxt.AppendLine($", KAIS")
+            xSqlTxt.AppendLine($", CODE9_1")
+            xSqlTxt.AppendLine($", CODEX_4")
+            xSqlTxt.AppendLine($", CODEX_5")
+            xSqlTxt.AppendLine($", CODEX_1")
+            xSqlTxt.AppendLine($", CODEX_2")
+            xSqlTxt.AppendLine($", CODEX_3")
+            xSqlTxt.AppendLine($", KIN1")
+            xSqlTxt.AppendLine($", KIN2")
+            xSqlTxt.AppendLine($", KIN3")
+            xSqlTxt.AppendLine($", KIN4")
+            xSqlTxt.AppendLine($", KIN5")
+            xSqlTxt.AppendLine($", KIN6")
+            xSqlTxt.AppendLine($", KIN7")
+            xSqlTxt.AppendLine($", KIN8")
+            xSqlTxt.AppendLine($", KIN9")
+            xSqlTxt.AppendLine($", KIN10")
+            xSqlTxt.AppendLine($", KIN11")
+            xSqlTxt.AppendLine($", KIN12")
+            xSqlTxt.AppendLine($", KIN13")
+            xSqlTxt.AppendLine($", KIN14")
+            xSqlTxt.AppendLine($")")
+            xSqlTxt.AppendLine($"SELECT")
+            xSqlTxt.AppendLine($"  @SYSUSERNO@ AS USER_NO")
+            xSqlTxt.AppendLine($", @SESSION_ID@ AS SESSION_ID")
+            xSqlTxt.AppendLine($", @PROGRAM_CODE@ AS PROGRAM_CODE")
+            xSqlTxt.AppendLine($", SUB.NENGETU AS NENGETU")
+            xSqlTxt.AppendLine($", MAX(SUB.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($", MAX(SUB.SIME) AS SIME")
+            xSqlTxt.AppendLine($", MAX(SUB.BMN_UW) AS BMN_UW")
+            xSqlTxt.AppendLine($", MAX(SUB.S_BMN_UW) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($", SUB.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($", CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($", MAX(SUB.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($", SUB.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($", SUB.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($", CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KIN1) AS TOU_GEN_KIN1")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KIN2) AS TOU_GEN_KIN2")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KIN3) AS TOU_GEN_KIN3")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KIN4) AS TOU_GEN_KIN4")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KIN5) AS TOU_GEN_KIN5")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KIN) AS TOU_GEN_KIN")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_ZEI) AS TOU_GEN_ZEI")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_GEN_KOMI) AS TOU_GEN_KOMI")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_URI_KIN) AS TOU_URI_KIN")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_URI_ZEI) AS TOU_URI_ZEI")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_URI_KOMI) AS TOU_URI_KOMI")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_UKE_0) AS TOU_UKE_0")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_MIS_0) AS TOU_MIS_0")
+            xSqlTxt.AppendLine($", SUM(SUB.TOU_NYU_KIN) AS TOU_NYU_KIN")
+            xSqlTxt.AppendLine($"FROM")
+            xSqlTxt.AppendLine($"    (")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      DAT.NENGETU AS NENGETU")
+            xSqlTxt.AppendLine($"    , MAX(WMS.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CODE1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR1) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR2) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WMS.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WMS.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , DAT.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , DAT.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 1 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS TOU_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 2 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS TOU_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 3 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS TOU_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 4 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS TOU_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 5 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS TOU_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS TOU_GEN_KIN")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.ZEI) AS TOU_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * ( DAT.KIN + DAT.ZEI ) ) AS TOU_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_URI_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_URI_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_URI_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_UKE_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_MIS_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"        dbo.D_SHIWAKE_UW_GEN AS DAT")
+            xSqlTxt.AppendLine($"    INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxt.AppendLine($"        ON WMS.KOJ     = DAT.KOJ")
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    AND WMS.KOJ_UW = DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.D_SHIWAKE AS SWK")
+            xSqlTxt.AppendLine($"        ON DAT.KAIS = SWK.KAIS")
+            xSqlTxt.AppendLine($"           AND DAT.DDATE = SWK.DDATE")
+            xSqlTxt.AppendLine($"           AND DAT.DNO = SWK.DNO")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_KMK AS KMK")
+            xSqlTxt.AppendLine($"        ON DAT.KMK = KMK.CODE")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_YOUSO AS YOU")
+            xSqlTxt.AppendLine($"        ON DAT.YOUSO = YOU.CODE")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_MEI AS MEI")
+            xSqlTxt.AppendLine($"        ON DAT.DKBN = MEI.CODE")
+            xSqlTxt.AppendLine($"           AND MEI.MKBN = 5")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+
+            If condition.M_KEIJYO_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND DAT.M_KEIJYO_KBN = 1")
+            End If
+            If condition.M_KEIJYO_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.M_KEIJYO_KBN <> 1")
+            End If
+            If condition.KSY_SYO_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.KSY_SYO = @KSY_SYO_DOM@")
+            End If
+            If condition.SYONIN_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND (SWK.SFLG = 0 OR SWK.SFLG IS NULL)")
+            End If
+            If condition.SYONIN_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND SWK.SFLG <> 0")
+            End If
+            If condition.FUSEN_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.FUSEN = @FUSEN_CODE@")
+            End If
+            If condition.GENKA_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND MEI.NUMBER3 <> 1")
+            End If
+            If condition.GENKA_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND KMK.KMK_KBN <> 3")
+            End If
+            If condition.GENKA_OPT = 2 Then
+                xSqlTxt.AppendLine($"          AND KMK.KMK_KBN = 3")
+            End If
+            If condition.YOUSO_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.YOUSO = @YOUSO_DOM@")
+            End If
+            If condition.DATE_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.NENGETU = @DATE_DOM@")
+            End If
+            If condition.CHU_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.CHU = @CHU_DOM@")
+            End If
+            If condition.TOR_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.TOR = @TOR_DOM@")
+            End If
+            If condition.UW_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.UW = @UW_DOM@")
+            End If
+            xSqlTxt.AppendLine($"          AND DAT.KOJ_KMK_KBN = 1")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WMS.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"      DAT.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    , DAT.NENGETU")
+            xSqlTxt.AppendLine($"    UNION ALL")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      DAT.NENGETU AS NENGETU")
+            xSqlTxt.AppendLine($"    , MAX(WMS.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CODE1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR1) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR2) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WMS.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WMS.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , DAT.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , DAT.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * DAT.KIN) AS TOU_URI_KIN")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * DAT.ZEI) AS TOU_URI_ZEI")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS TOU_URI_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_UKE_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_MIS_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"        dbo.D_SHIWAKE_UW_URI AS DAT")
+            xSqlTxt.AppendLine($"    INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxt.AppendLine($"        ON WMS.KOJ = DAT.KOJ")
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    AND WMS.KOJ_UW = DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.D_SHIWAKE AS SWK")
+            xSqlTxt.AppendLine($"        ON DAT.KAIS = SWK.KAIS")
+            xSqlTxt.AppendLine($"           AND DAT.DDATE = SWK.DDATE")
+            xSqlTxt.AppendLine($"           AND DAT.DNO = SWK.DNO")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+            If condition.SYONIN_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND (SWK.SFLG = 0 OR SWK.SFLG IS NULL)")
+            End If
+            If condition.SYONIN_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND SWK.SFLG <> 0")
+            End If
+            If condition.FUSEN_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.FUSEN = @FUSEN_CODE@")
+            End If
+            If condition.DATE_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.NENGETU = @DATE_DOM@")
+            End If
+            xSqlTxt.AppendLine($"          AND DAT.KOJ_KMK_KBN = 3")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WMS.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"      DAT.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    , DAT.NENGETU")
+            xSqlTxt.AppendLine($"    UNION ALL")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      DAT.NENGETU AS NENGETU")
+            xSqlTxt.AppendLine($"    , MAX(WMS.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CODE1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR1) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR2) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WMS.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WMS.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , DAT.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , DAT.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_URI_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_URI_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS TOU_URI_KOMI")
+            xSqlTxt.AppendLine($"    , SUM(CASE KMK.KMK_KBN WHEN 1 THEN NULL ELSE 1 END * CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS TOU_UKE_0")
+            xSqlTxt.AppendLine($"    , SUM(CASE KMK.KMK_KBN WHEN 1 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS TOU_MIS_0")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS TOU_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"        dbo.D_SHIWAKE_UW_NYU AS DAT")
+            xSqlTxt.AppendLine($"    INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxt.AppendLine($"        ON WMS.KOJ = DAT.KOJ")
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"   AND WMS.KOJ_UW = DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.D_SHIWAKE AS SWK")
+            xSqlTxt.AppendLine($"        ON DAT.KAIS = SWK.KAIS")
+            xSqlTxt.AppendLine($"           AND DAT.DDATE = SWK.DDATE")
+            xSqlTxt.AppendLine($"           AND DAT.DNO = SWK.DNO")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_KMK AS KMK")
+            xSqlTxt.AppendLine($"        ON DAT.KMK = KMK.CODE")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+
+            If condition.SYONIN_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND (SWK.SFLG = 0 OR SWK.SFLG IS NULL)")
+            End If
+            If condition.SYONIN_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND SWK.SFLG <> 0")
+            End If
+            If condition.FUSEN_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.FUSEN = @FUSEN_CODE@")
+            End If
+            If condition.DATE_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.NENGETU = @DATE_DOM@")
+            End If
+            xSqlTxt.AppendLine($"          AND DAT.KOJ_KMK_KBN = 4")
+            xSqlTxt.AppendLine($"          AND DAT.TORIHIKI_KBN = 0")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WMS.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"      DAT.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    , DAT.NENGETU")
+            xSqlTxt.AppendLine($"    ) AS SUB")
+            xSqlTxt.AppendLine($"GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"  SUB.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"  SUB.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($", SUB.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($", SUB.NENGETU")
+            xSqlTxt.AppendLine($";")
+
+            Return ReplaceInsertSql(condition, xSqlTxt.ToString())
+
+        End Function
+
+        Public Sub PG501033001Eda80(condition As AlTKyotuGenkaConditionEntity)
+            '' 互換のための元の名前のメソッドを残しておきます。
+            ''   ※ カスタマイズプログラムから呼ばれる可能性があります。
+            PG501033001Eda80_INSERT_W_CALCDATA1(condition)
+        End Sub
+
+        Public Sub PG501033001Eda80_INSERT_W_CALCDATA1(condition As AlTKyotuGenkaConditionEntity)
+
+            InsertWorkTable(PG501033001Eda80_INSERT_W_CALCDATA1_SQL(condition))
+
+        End Sub
+
+        Public Function PG501033001Eda100_INSERT_W_CALCDATA2_SQL(condition As AlTKyotuGenkaConditionEntity) As String
+
+            Dim xSqlTxt = New StringBuilder()
+
+            xSqlTxt.AppendLine("--" & System.Reflection.MethodBase.GetCurrentMethod.Name & "ResultId" & If(condition.ResultId Is Nothing, "", condition.ResultId.ToString) & "TestId" & If(condition.TestId Is Nothing, "", condition.TestId.ToString))
+            xSqlTxt.AppendLine($"INSERT {W_CALCDATA2}")
+            xSqlTxt.AppendLine($"(")
+            xSqlTxt.AppendLine($"  USER_NO")
+            xSqlTxt.AppendLine($", SESSION_ID")
+            xSqlTxt.AppendLine($", PROGRAM_CODE")
+            xSqlTxt.AppendLine($", KAIS")
+            xSqlTxt.AppendLine($", CODE9_1")
+            xSqlTxt.AppendLine($", CODEX_4")
+            xSqlTxt.AppendLine($", CODEX_5")
+            xSqlTxt.AppendLine($", CODEX_1")
+            xSqlTxt.AppendLine($", CODEX_2")
+            xSqlTxt.AppendLine($", CODEX_3")
+            xSqlTxt.AppendLine($", KIN1")
+            xSqlTxt.AppendLine($", KIN2")
+            xSqlTxt.AppendLine($", KIN3")
+            xSqlTxt.AppendLine($", KIN4")
+            xSqlTxt.AppendLine($", KIN5")
+            xSqlTxt.AppendLine($", KIN6")
+            xSqlTxt.AppendLine($", KIN7")
+            xSqlTxt.AppendLine($", KIN8")
+            xSqlTxt.AppendLine($", KIN9")
+            xSqlTxt.AppendLine($", KIN10")
+            xSqlTxt.AppendLine($", KIN11")
+            xSqlTxt.AppendLine($", KIN12")
+            xSqlTxt.AppendLine($", KIN13")
+            xSqlTxt.AppendLine($", KIN14")
+            xSqlTxt.AppendLine($")")
+            xSqlTxt.AppendLine($"SELECT")
+            xSqlTxt.AppendLine($"  @SYSUSERNO@ AS USER_NO")
+            xSqlTxt.AppendLine($", @SESSION_ID@ AS SESSION_ID")
+            xSqlTxt.AppendLine($", @PROGRAM_CODE@ AS PROGRAM_CODE")
+            xSqlTxt.AppendLine($", MAX(SUB.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($", MAX(SUB.SIME) AS SIME")
+            xSqlTxt.AppendLine($", MAX(SUB.BMN_UW) AS BMN_UW")
+            xSqlTxt.AppendLine($", MAX(SUB.S_BMN_UW) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($", SUB.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($", CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($", MAX(SUB.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($", SUB.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($", SUB.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($", CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KIN1) AS ZEN_GEN_KIN1")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KIN2) AS ZEN_GEN_KIN2")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KIN3) AS ZEN_GEN_KIN3")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KIN4) AS ZEN_GEN_KIN4")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KIN5) AS ZEN_GEN_KIN5")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KIN) AS ZEN_GEN_KIN")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_ZEI) AS ZEN_GEN_ZEI")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_GEN_KOMI) AS ZEN_GEN_KOMI")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_URI_KIN) AS ZEN_URI_KIN")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_URI_ZEI) AS ZEN_URI_ZEI")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_URI_KOMI) AS ZEN_URI_KOMI")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_UKE_0) AS ZEN_UKE_0")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_MIS_0) AS ZEN_MIS_0")
+            xSqlTxt.AppendLine($", SUM(SUB.ZEN_NYU_KIN) AS ZEN_NYU_KIN")
+            xSqlTxt.AppendLine($"FROM")
+            xSqlTxt.AppendLine($"    (")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      MAX(WMS.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CODE1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR1) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR2) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WMS.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WMS.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , DAT.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , DAT.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 1 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS ZEN_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 2 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS ZEN_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 3 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS ZEN_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 4 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS ZEN_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , SUM(CASE YOU.YOUSO_KBN WHEN 5 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS ZEN_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.KIN) AS ZEN_GEN_KIN")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * DAT.ZEI) AS ZEN_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN 1 ELSE-1 END * ( DAT.KIN + DAT.ZEI ) ) AS ZEN_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_UKE_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_MIS_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"        dbo.D_SHIWAKE_UW_GEN AS DAT")
+            xSqlTxt.AppendLine($"    INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxt.AppendLine($"        ON WMS.KOJ = DAT.KOJ")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.D_SHIWAKE AS SWK")
+            xSqlTxt.AppendLine($"        ON DAT.KAIS = SWK.KAIS")
+            xSqlTxt.AppendLine($"           AND DAT.DDATE = SWK.DDATE")
+            xSqlTxt.AppendLine($"           AND DAT.DNO = SWK.DNO")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_KMK AS KMK")
+            xSqlTxt.AppendLine($"        ON DAT.KMK = KMK.CODE")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_YOUSO AS YOU")
+            xSqlTxt.AppendLine($"        ON DAT.YOUSO = YOU.CODE")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_MEI AS MEI")
+            xSqlTxt.AppendLine($"        ON DAT.DKBN = MEI.CODE")
+            xSqlTxt.AppendLine($"           AND 5 = MEI.MKBN")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+
+            If condition.TOUGETU_HASSEI_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND EXISTS")
+                xSqlTxt.AppendLine($"        (")
+                xSqlTxt.AppendLine($"        SELECT")
+                xSqlTxt.AppendLine($"          N'X' AS DUMMY")
+                xSqlTxt.AppendLine($"        FROM")
+                xSqlTxt.AppendLine($"          {W_CALCDATA1} AS WCD1")
+                xSqlTxt.AppendLine($"        WHERE 1 = 1")
+                xSqlTxt.AppendLine($"              AND WCD1.USER_NO = @SYSUSERNO@")
+                xSqlTxt.AppendLine($"              AND WCD1.SESSION_ID = @SESSION_ID@")
+                xSqlTxt.AppendLine($"              AND WCD1.PROGRAM_CODE = @PROGRAM_CODE@")
+                If condition.KOJ_SHUKEI_OPT = 0 Then
+                    xSqlTxt.AppendLine($" AND   WCD1.CODEX_1   =   WMS.SKOJ")
+                End If
+
+                If condition.KOJ_SHUKEI_OPT <> 0 Then
+                    xSqlTxt.AppendLine($" AND  WCD1.CODEX_2     =  WMS.KOJ")
+                End If
+
+                If condition.KOJ_SHUKEI_OPT = 2 Then
+                    xSqlTxt.AppendLine($" AND  WCD1.CODEX_3   =   WMS.KOJ_UW")
+                End If
+
+                xSqlTxt.AppendLine($"        )")
+            End If
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"          AND WMS.KOJ_UW = DAT.KOJ_UW")
+            End If
+            If condition.SYONIN_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND (SWK.SFLG = 0 OR SWK.SFLG IS NULL)")
+            End If
+            If condition.SYONIN_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND SWK.SFLG <> 0")
+            End If
+            Select Case True
+                Case condition.DATE_CHK = 1
+                    xSqlTxt.AppendLine($"          AND DAT.NENGETU < @DATE_FROM@")
+                Case Else
+                    xSqlTxt.AppendLine($"          AND DAT.NENGETU = @SYS_MIN_DATE@")
+
+            End Select
+            If condition.M_KEIJYO_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND DAT.M_KEIJYO_KBN = 1")
+            End If
+            If condition.M_KEIJYO_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.M_KEIJYO_KBN <> 1")
+            End If
+            If condition.KSY_SYO_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.KSY_SYO = @KSY_SYO_DOM@")
+            End If
+            If condition.FUSEN_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.FUSEN = @FUSEN_CODE@")
+            End If
+
+            If condition.GENKA_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND MEI.NUMBER3 <> 1")
+            End If
+            If condition.GENKA_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND KMK.KMK_KBN <> 3")
+            End If
+            If condition.GENKA_OPT = 2 Then
+                xSqlTxt.AppendLine($"          AND KMK.KMK_KBN = 3")
+            End If
+
+            If condition.YOUSO_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.YOUSO = @YOUSO_DOM@")
+            End If
+            If condition.CHU_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.CHU = @CHU_DOM@")
+            End If
+            If condition.TOR_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.TOR = @TOR_DOM@")
+            End If
+            If condition.UW_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.UW = @UW_DOM@")
+            End If
+            xSqlTxt.AppendLine($"          AND DAT.KOJ_KMK_KBN = 1")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WMS.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"      DAT.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    UNION ALL")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      MAX(WMS.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CODE1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR1) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR2) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WMS.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WMS.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , DAT.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , DAT.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * DAT.KIN) AS ZEN_URI_KIN")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * DAT.ZEI) AS ZEN_URI_ZEI")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS ZEN_URI_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_UKE_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_MIS_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"      {W_MASTER} AS WMS")
+            xSqlTxt.AppendLine($"    INNER JOIN dbo.D_SHIWAKE_UW_URI AS DAT")
+            xSqlTxt.AppendLine($"      ON  WMS.KOJ = DAT.KOJ")
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"  AND  WMS.KOJ_UW   =   DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.D_SHIWAKE AS SWK")
+            xSqlTxt.AppendLine($"        ON DAT.KAIS = SWK.KAIS")
+            xSqlTxt.AppendLine($"           AND DAT.DDATE = SWK.DDATE")
+            xSqlTxt.AppendLine($"           AND DAT.DNO = SWK.DNO")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+            If condition.TOUGETU_HASSEI_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND EXISTS")
+                xSqlTxt.AppendLine($"        (")
+                xSqlTxt.AppendLine($"        SELECT")
+                xSqlTxt.AppendLine($"          N'X' AS DUMMY")
+                xSqlTxt.AppendLine($"        FROM")
+                xSqlTxt.AppendLine($"          {W_CALCDATA1} AS WCD1")
+                xSqlTxt.AppendLine($"        WHERE 1 = 1")
+                xSqlTxt.AppendLine($"              AND WCD1.USER_NO = @SYSUSERNO@")
+                xSqlTxt.AppendLine($"              AND WCD1.SESSION_ID = @SESSION_ID@")
+                xSqlTxt.AppendLine($"              AND WCD1.PROGRAM_CODE = @PROGRAM_CODE@")
+
+                If condition.KOJ_SHUKEI_OPT = 0 Then
+                    xSqlTxt.AppendLine($"              AND WCD1.CODEX_1 = WMS.SKOJ")
+                End If
+
+                If condition.KOJ_SHUKEI_OPT <> 0 Then
+                    xSqlTxt.AppendLine($"              AND WCD1.CODEX_2 = WMS.KOJ")
+                End If
+
+                If condition.KOJ_SHUKEI_OPT = 2 Then
+                    xSqlTxt.AppendLine($"              AND WCD1.CODEX_3 = WMS.KOJ_UW")
+                End If
+                xSqlTxt.AppendLine($"        )")
+            End If
+
+            If condition.SYONIN_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND (SWK.SFLG = 0 OR SWK.SFLG IS NULL)")
+            End If
+            If condition.SYONIN_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND SWK.SFLG <> 0")
+            End If
+            If condition.YOUSO_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND WMS.KOJ = DAT.KOJ")
+            End If
+            Select Case True
+                Case condition.DATE_CHK = 1
+                    xSqlTxt.AppendLine($"          AND DAT.NENGETU < @DATE_FROM@")
+                Case Else
+                    xSqlTxt.AppendLine($"          AND DAT.NENGETU = @SYS_MIN_DATE@")
+
+            End Select
+            If condition.FUSEN_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.FUSEN = @FUSEN_CODE@")
+            End If
+            xSqlTxt.AppendLine($"          AND DAT.KOJ_KMK_KBN = 3")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WMS.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"      DAT.KOJ")
+
+            End Select
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , DAT.KOJ_UW")
+            End If
+
+            xSqlTxt.AppendLine($"    UNION ALL")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      MAX(WMS.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CODE1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR1) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WMS.CHAR2) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WMS.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WMS.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , DAT.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , DAT.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_KOMI")
+            xSqlTxt.AppendLine($"    , SUM(CASE KMK.KMK_KBN WHEN 1 THEN NULL ELSE 1 END * CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS ZEN_UKE_0")
+            xSqlTxt.AppendLine($"    , SUM(CASE KMK.KMK_KBN WHEN 1 THEN 1 ELSE NULL END * CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS ZEN_MIS_0")
+            xSqlTxt.AppendLine($"    , SUM(CASE DAT.TS_KBN WHEN 1 THEN-1 ELSE 1 END * ( DAT.KIN + DAT.ZEI ) ) AS ZEN_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"      {W_MASTER} AS WMS")
+            xSqlTxt.AppendLine($"    INNER JOIN dbo.D_SHIWAKE_UW_NYU AS DAT")
+            xSqlTxt.AppendLine($"        ON WMS.KOJ = DAT.KOJ")
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    AND WMS.KOJ_UW  =  DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.D_SHIWAKE AS SWK")
+            xSqlTxt.AppendLine($"        ON DAT.KAIS = SWK.KAIS")
+            xSqlTxt.AppendLine($"           AND DAT.DDATE = SWK.DDATE")
+            xSqlTxt.AppendLine($"           AND DAT.DNO = SWK.DNO")
+            xSqlTxt.AppendLine($"    LEFT OUTER JOIN dbo.M_KMK AS KMK")
+            xSqlTxt.AppendLine($"        ON DAT.KMK = KMK.CODE")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+            If condition.TOUGETU_HASSEI_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND EXISTS")
+                xSqlTxt.AppendLine($"        (")
+                xSqlTxt.AppendLine($"        SELECT")
+                xSqlTxt.AppendLine($"          N'X' AS DUMMY")
+                xSqlTxt.AppendLine($"        FROM")
+                xSqlTxt.AppendLine($"          {W_CALCDATA1} AS WCD1")
+                xSqlTxt.AppendLine($"        WHERE 1 = 1")
+                xSqlTxt.AppendLine($"              AND WCD1.USER_NO = @SYSUSERNO@")
+                xSqlTxt.AppendLine($"              AND WCD1.SESSION_ID = @SESSION_ID@")
+                xSqlTxt.AppendLine($"              AND WCD1.PROGRAM_CODE = @PROGRAM_CODE@")
+                If condition.KOJ_SHUKEI_OPT = 0 Then
+                    xSqlTxt.AppendLine($"              AND WCD1.CODEX_1 = WMS.SKOJ")
+                End If
+                If condition.KOJ_SHUKEI_OPT <> 0 Then
+                    xSqlTxt.AppendLine($"              AND WCD1.CODEX_2 = WMS.KOJ")
+                End If
+
+                If condition.KOJ_SHUKEI_OPT = 2 Then
+                    xSqlTxt.AppendLine($"              AND WCD1.CODEX_3 = WMS.KOJ_UW")
+                End If
+
+                xSqlTxt.AppendLine($"        )")
+            End If
+
+            If condition.SYONIN_OPT = 0 Then
+                xSqlTxt.AppendLine($"          AND (SWK.SFLG = 0 OR SWK.SFLG IS NULL)")
+            End If
+            If condition.SYONIN_OPT = 1 Then
+                xSqlTxt.AppendLine($"          AND SWK.SFLG <> 0")
+            End If
+            If condition.GENKA_OPT = 2 Then
+                xSqlTxt.AppendLine($"          AND WMS.KOJ = DAT.KOJ")
+            End If
+            Select Case True
+                Case condition.DATE_CHK = 1
+                    xSqlTxt.AppendLine($"          AND DAT.NENGETU < @DATE_FROM@")
+                Case Else
+                    xSqlTxt.AppendLine($"          AND DAT.NENGETU = @SYS_MIN_DATE@")
+
+            End Select
+            If condition.FUSEN_CHK = 1 Then
+                xSqlTxt.AppendLine($"          AND DAT.FUSEN = @FUSEN_CODE@")
+            End If
+            xSqlTxt.AppendLine($"          AND DAT.KOJ_KMK_KBN = 4")
+            xSqlTxt.AppendLine($"          AND DAT.TORIHIKI_KBN = 0")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WMS.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"      DAT.KOJ")
+
+            End Select
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , DAT.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"    UNION ALL")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      MAX(WCD1.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($"    , MAX(WCD1.CODE9_1) AS SIME")
+            xSqlTxt.AppendLine($"    , MAX(WCD1.CODEX_4) AS BMN_UW")
+            xSqlTxt.AppendLine($"    , MAX(WCD1.CODEX_5) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    , WCD1.CODEX_1 AS SKOJ")
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    , MAX(WCD1.CODEX_1) AS SKOJ")
+                    xSqlTxt.AppendLine($"    , WCD1.CODEX_2 AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"    , WCD1.CODEX_3 AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($"    , CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN1")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN2")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN3")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN4")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN5")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_GEN_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_KIN")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_ZEI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_URI_KOMI")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_UKE_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_MIS_0")
+            xSqlTxt.AppendLine($"    , CAST(NULL AS NUMERIC(38 , 10)) AS ZEN_NYU_KIN")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"      {W_CALCDATA1} AS WCD1")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WCD1.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WCD1.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WCD1.PROGRAM_CODE = @PROGRAM_CODE@")
+            xSqlTxt.AppendLine($"    GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"      WCD1.CODEX_1")
+                Case Else
+                    xSqlTxt.AppendLine($"      WCD1.CODEX_2")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"    , WCD1.CODEX_3")
+            End If
+            xSqlTxt.AppendLine($"    ) AS SUB")
+            xSqlTxt.AppendLine($"GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"  SUB.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"  SUB.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($", SUB.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($";")
+
+            Return ReplaceInsertSql(condition, xSqlTxt.ToString())
+
+        End Function
+
+        Public Sub PG501033001Eda100(condition As AlTKyotuGenkaConditionEntity)
+            '' 互換のための元の名前のメソッドを残しておきます。
+            ''   ※ カスタマイズプログラムから呼ばれる可能性があります。
+            PG501033001Eda100_INSERT_W_CALCDATA2(condition)
+        End Sub
+
+        Public Sub PG501033001Eda100_INSERT_W_CALCDATA2(condition As AlTKyotuGenkaConditionEntity)
+
+            InsertWorkTable(PG501033001Eda100_INSERT_W_CALCDATA2_SQL(condition))
+
+        End Sub
+
+        Public Function PG501033001Eda120_INSERT_W_CALCDATA3_SQL(condition As AlTKyotuGenkaConditionEntity) As String
+
+            Dim xSqlTxt = New StringBuilder()
+
+            xSqlTxt.AppendLine("--" & System.Reflection.MethodBase.GetCurrentMethod.Name & "ResultId" & If(condition.ResultId Is Nothing, "", condition.ResultId.ToString) & "TestId" & If(condition.TestId Is Nothing, "", condition.TestId.ToString))
+            xSqlTxt.AppendLine($"INSERT {W_CALCDATA3}")
+            xSqlTxt.AppendLine($"(")
+            xSqlTxt.AppendLine($"  USER_NO")
+            xSqlTxt.AppendLine($", SESSION_ID")
+            xSqlTxt.AppendLine($", PROGRAM_CODE")
+            xSqlTxt.AppendLine($", KAIS")
+            xSqlTxt.AppendLine($", CODE9_1")
+            xSqlTxt.AppendLine($", CODEX_4")
+            xSqlTxt.AppendLine($", CODEX_5")
+            xSqlTxt.AppendLine($", CODEX_1")
+            xSqlTxt.AppendLine($", CODEX_2")
+            xSqlTxt.AppendLine($", CODEX_3")
+            xSqlTxt.AppendLine($", KIN1")
+            xSqlTxt.AppendLine($", KIN2")
+            xSqlTxt.AppendLine($", KIN3")
+            xSqlTxt.AppendLine($", KIN4")
+            xSqlTxt.AppendLine($", KIN5")
+            xSqlTxt.AppendLine($", KIN6")
+            xSqlTxt.AppendLine($", KIN7")
+            xSqlTxt.AppendLine($", KIN8")
+            xSqlTxt.AppendLine($", KIN9")
+            xSqlTxt.AppendLine($", KIN10")
+            xSqlTxt.AppendLine($", KIN11")
+            xSqlTxt.AppendLine($", KIN12")
+            xSqlTxt.AppendLine($", KIN13")
+            xSqlTxt.AppendLine($", KIN14")
+            xSqlTxt.AppendLine($")")
+            xSqlTxt.AppendLine($"SELECT")
+            xSqlTxt.AppendLine($"  @SYSUSERNO@ AS USER_NO")
+            xSqlTxt.AppendLine($", @SESSION_ID@ AS SESSION_ID")
+            xSqlTxt.AppendLine($", @PROGRAM_CODE@ AS PROGRAM_CODE")
+            xSqlTxt.AppendLine($", MAX(SUB.KAIS) AS KAIS")
+            xSqlTxt.AppendLine($", MAX(SUB.SIME) AS SIME")
+            xSqlTxt.AppendLine($", MAX(SUB.BMN_UW) AS BMN_UW")
+            xSqlTxt.AppendLine($", MAX(SUB.S_BMN_UW) AS S_BMN_UW")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($", SUB.SKOJ AS SKOJ")
+                    xSqlTxt.AppendLine($", CAST(NULL AS NVARCHAR) AS KOJ")
+                Case Else
+                    xSqlTxt.AppendLine($", MAX(SUB.SKOJ) AS SKOJ")
+                    xSqlTxt.AppendLine($", SUB.KOJ AS KOJ")
+
+            End Select
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($", SUB.KOJ_UW AS KOJ_UW")
+                Case Else
+                    xSqlTxt.AppendLine($", CAST(NULL AS NVARCHAR) AS KOJ_UW")
+
+            End Select
+            xSqlTxt.AppendLine($", SUM(SUB.KIN1) AS RUI_GEN_KIN1")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN2) AS RUI_GEN_KIN2")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN3) AS RUI_GEN_KIN3")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN4) AS RUI_GEN_KIN4")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN5) AS RUI_GEN_KIN5")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN6) AS RUI_GEN_KIN")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN7) AS RUI_GEN_ZEI")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN8) AS RUI_GEN_KOMI")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN9) AS RUI_URI_KIN")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN10) AS RUI_URI_ZEI")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN11) AS RUI_URI_KOMI")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN12) AS RUI_UKE_0")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN13) AS RUI_MIS_0")
+            xSqlTxt.AppendLine($", SUM(SUB.KIN14) AS RUI_NYU_KIN")
+            xSqlTxt.AppendLine($"FROM")
+            xSqlTxt.AppendLine($"    (")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      WCD1.KAIS")
+            xSqlTxt.AppendLine($"    , WCD1.CODE9_1 AS SIME")
+            xSqlTxt.AppendLine($"    , WCD1.CODEX_4 AS BMN_UW")
+            xSqlTxt.AppendLine($"    , WCD1.CODEX_5 AS S_BMN_UW")
+            xSqlTxt.AppendLine($"    , WCD1.CODEX_1 AS SKOJ")
+            xSqlTxt.AppendLine($"    , WCD1.CODEX_2 AS KOJ")
+            xSqlTxt.AppendLine($"    , WCD1.CODEX_3 AS KOJ_UW")
+            xSqlTxt.AppendLine($"    , WCD1.KIN1")
+            xSqlTxt.AppendLine($"    , WCD1.KIN2")
+            xSqlTxt.AppendLine($"    , WCD1.KIN3")
+            xSqlTxt.AppendLine($"    , WCD1.KIN4")
+            xSqlTxt.AppendLine($"    , WCD1.KIN5")
+            xSqlTxt.AppendLine($"    , WCD1.KIN6")
+            xSqlTxt.AppendLine($"    , WCD1.KIN7")
+            xSqlTxt.AppendLine($"    , WCD1.KIN8")
+            xSqlTxt.AppendLine($"    , WCD1.KIN9")
+            xSqlTxt.AppendLine($"    , WCD1.KIN10")
+            xSqlTxt.AppendLine($"    , WCD1.KIN11")
+            xSqlTxt.AppendLine($"    , WCD1.KIN12")
+            xSqlTxt.AppendLine($"    , WCD1.KIN13")
+            xSqlTxt.AppendLine($"    , WCD1.KIN14")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"      {W_CALCDATA1} AS WCD1")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WCD1.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WCD1.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WCD1.PROGRAM_CODE = @PROGRAM_CODE@")
+            xSqlTxt.AppendLine($"    UNION ALL")
+            xSqlTxt.AppendLine($"    SELECT")
+            xSqlTxt.AppendLine($"      WCD2.KAIS")
+            xSqlTxt.AppendLine($"    , WCD2.CODE9_1 AS SIME")
+            xSqlTxt.AppendLine($"    , WCD2.CODEX_4 AS BMN_UW")
+            xSqlTxt.AppendLine($"    , WCD2.CODEX_5 AS S_BMN_UW")
+            xSqlTxt.AppendLine($"    , WCD2.CODEX_1 AS SKOJ")
+            xSqlTxt.AppendLine($"    , WCD2.CODEX_2 AS KOJ")
+            xSqlTxt.AppendLine($"    , WCD2.CODEX_3 AS KOJ_UW")
+            xSqlTxt.AppendLine($"    , WCD2.KIN1")
+            xSqlTxt.AppendLine($"    , WCD2.KIN2")
+            xSqlTxt.AppendLine($"    , WCD2.KIN3")
+            xSqlTxt.AppendLine($"    , WCD2.KIN4")
+            xSqlTxt.AppendLine($"    , WCD2.KIN5")
+            xSqlTxt.AppendLine($"    , WCD2.KIN6")
+            xSqlTxt.AppendLine($"    , WCD2.KIN7")
+            xSqlTxt.AppendLine($"    , WCD2.KIN8")
+            xSqlTxt.AppendLine($"    , WCD2.KIN9")
+            xSqlTxt.AppendLine($"    , WCD2.KIN10")
+            xSqlTxt.AppendLine($"    , WCD2.KIN11")
+            xSqlTxt.AppendLine($"    , WCD2.KIN12")
+            xSqlTxt.AppendLine($"    , WCD2.KIN13")
+            xSqlTxt.AppendLine($"    , WCD2.KIN14")
+            xSqlTxt.AppendLine($"    FROM")
+            xSqlTxt.AppendLine($"      {W_CALCDATA2} AS WCD2")
+            xSqlTxt.AppendLine($"    WHERE 1 = 1")
+            xSqlTxt.AppendLine($"          AND WCD2.USER_NO = @SYSUSERNO@")
+            xSqlTxt.AppendLine($"          AND WCD2.SESSION_ID = @SESSION_ID@")
+            xSqlTxt.AppendLine($"          AND WCD2.PROGRAM_CODE = @PROGRAM_CODE@")
+            xSqlTxt.AppendLine($"    ) AS SUB")
+            xSqlTxt.AppendLine($"GROUP BY")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"  SUB.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"  SUB.KOJ")
+
+            End Select
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($", SUB.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($";")
+
+            Return ReplaceInsertSql(condition, xSqlTxt.ToString())
+
+        End Function
+
+        Public Sub PG501033001Eda120(condition As AlTKyotuGenkaConditionEntity)
+            '' 互換のための元の名前のメソッドを残しておきます。
+            ''   ※ カスタマイズプログラムから呼ばれる可能性があります。
+            PG501033001Eda120_INSERT_W_CALCDATA3(condition)
+        End Sub
+
+        Public Sub PG501033001Eda120_INSERT_W_CALCDATA3(condition As AlTKyotuGenkaConditionEntity)
+
+            InsertWorkTable(PG501033001Eda120_INSERT_W_CALCDATA3_SQL(condition))
+
+        End Sub
+
+        Public Function PG501033001Eda140_INSERT_W_COLHEAD_SQL(condition As AlTKyotuGenkaConditionEntity) As String
+
+            Dim xSqlTxt = New StringBuilder()
+
+            xSqlTxt.AppendLine("--" & System.Reflection.MethodBase.GetCurrentMethod.Name & "ResultId" & If(condition.ResultId Is Nothing, "", condition.ResultId.ToString) & "TestId" & If(condition.TestId Is Nothing, "", condition.TestId.ToString))
+            xSqlTxt.AppendLine($"DECLARE @NUMBER4 INT")
+            xSqlTxt.AppendLine($"SET @NUMBER4 =")
+            xSqlTxt.AppendLine($"(")
+            xSqlTxt.AppendLine($"   SELECT NUMBER4")
+            xSqlTxt.AppendLine($"   FROM M_KANRI")
+            xSqlTxt.AppendLine($"   WHERE CODE = 11")
+            xSqlTxt.AppendLine($")")
+            xSqlTxt.AppendLine($"IF @NUMBER4 = 0")
+            xSqlTxt.AppendLine($"   BEGIN")
+
+            xSqlTxt.AppendLine($"        INSERT INTO {W_COLHEAD}")
+            xSqlTxt.AppendLine($"        (")
+            xSqlTxt.AppendLine($"          USER_NO")
+            xSqlTxt.AppendLine($"        , SESSION_ID")
+            xSqlTxt.AppendLine($"        , PROGRAM_CODE")
+            xSqlTxt.AppendLine($"        , COL_NO")
+            xSqlTxt.AppendLine($"        , COL_CAPTION")
+            xSqlTxt.AppendLine($"        )")
+            xSqlTxt.AppendLine($"        SELECT")
+            xSqlTxt.AppendLine($"          @SYSUSERNO@ AS USER_NO")
+            xSqlTxt.AppendLine($"        , @SESSION_ID@ AS SESSION_ID")
+            xSqlTxt.AppendLine($"        , @PROGRAM_CODE@ AS PROGRAM_CODE")
+            xSqlTxt.AppendLine($"        , SUB.COL_NO")
+            xSqlTxt.AppendLine($"        , MAX(SUB.COL_CAPTION) AS COL_CAPTION")
+            xSqlTxt.AppendLine($"        FROM")
+            xSqlTxt.AppendLine($"            (")
+            xSqlTxt.AppendLine($"            SELECT")
+            xSqlTxt.AppendLine($"              CASE MEI.CODE WHEN 1 THEN 103 WHEN 2 THEN 104 WHEN 3 THEN 105 WHEN 4 THEN 106 WHEN 5 THEN 107 END AS COL_NO")
+            xSqlTxt.AppendLine($"            , MEI.RYAKU AS COL_CAPTION")
+            xSqlTxt.AppendLine($"            FROM")
+            xSqlTxt.AppendLine($"              dbo.M_MEI AS MEI")
+            xSqlTxt.AppendLine($"            WHERE 1 = 1")
+            xSqlTxt.AppendLine($"                  AND MEI.MKBN = 2")
+            xSqlTxt.AppendLine($"                  AND MEI.CODE BETWEEN 1 AND 5")
+            xSqlTxt.AppendLine($"            UNION ALL")
+            xSqlTxt.AppendLine($"            SELECT")
+            xSqlTxt.AppendLine($"              103 AS COL_NO")
+            xSqlTxt.AppendLine($"            , NULL AS COL_CAPTION")
+            xSqlTxt.AppendLine($"            UNION ALL")
+            xSqlTxt.AppendLine($"            SELECT")
+            xSqlTxt.AppendLine($"              104 AS COL_NO")
+            xSqlTxt.AppendLine($"            , NULL AS COL_CAPTION")
+            xSqlTxt.AppendLine($"            UNION ALL")
+            xSqlTxt.AppendLine($"            SELECT")
+            xSqlTxt.AppendLine($"              105 AS COL_NO")
+            xSqlTxt.AppendLine($"            , NULL AS COL_CAPTION")
+            xSqlTxt.AppendLine($"            UNION ALL")
+            xSqlTxt.AppendLine($"            SELECT")
+            xSqlTxt.AppendLine($"              106 AS COL_NO")
+            xSqlTxt.AppendLine($"            , NULL AS COL_CAPTION")
+            xSqlTxt.AppendLine($"            UNION ALL")
+            xSqlTxt.AppendLine($"            SELECT")
+            xSqlTxt.AppendLine($"              107 AS COL_NO")
+            xSqlTxt.AppendLine($"            , NULL AS COL_CAPTION")
+            xSqlTxt.AppendLine($"            ) AS SUB")
+            xSqlTxt.AppendLine($"        GROUP BY")
+            xSqlTxt.AppendLine($"          SUB.COL_NO")
+
+            xSqlTxt.AppendLine($"   END")
+            xSqlTxt.AppendLine($";")
+
+            Return ReplaceInsertSql(condition, xSqlTxt.ToString())
+
+        End Function
+
+        Public Sub PG501033001Eda140(condition As AlTKyotuGenkaConditionEntity)
+            '' 互換のための元の名前のメソッドを残しておきます。
+            ''   ※ カスタマイズプログラムから呼ばれる可能性があります。
+            PG501033001Eda140_INSERT_W_COLHEAD(condition)
+        End Sub
+
+        Public Sub PG501033001Eda140_INSERT_W_COLHEAD(condition As AlTKyotuGenkaConditionEntity)
+
+            InsertWorkTable(PG501033001Eda140_INSERT_W_COLHEAD_SQL(condition))
+
+        End Sub
+
+        Public Function PG501033001Eda150_SELECT_SQL(condition As AlTKyotuGenkaConditionEntity) As String
+
+            Dim xSqlTxt = New StringBuilder()
+
+            xSqlTxt.AppendLine("--" & System.Reflection.MethodBase.GetCurrentMethod.Name & "ResultId" & If(condition.ResultId Is Nothing, "", condition.ResultId.ToString) & "TestId" & If(condition.TestId Is Nothing, "", condition.TestId.ToString))
+
+            Dim xSqlTxtSelect = New StringBuilder()
+
+            xSqlTxtSelect.AppendLine($"SELECT")
+            xSqlTxtSelect.AppendLine($"       DAT.KAIS    COL1")
+            xSqlTxtSelect.AppendLine($"      ,KAI.RYAKU   COL2")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"      ,'0'          COL3")
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"      ,KJU.BMN_UW   COL3")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,KOJ.BMN_UW   COL3")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"      ,NULL         COL4")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,BMU2.RYAKU   COL4")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"      ,DAT.SKOJ    COL5")
+            xSqlTxtSelect.AppendLine($"      ,SKO.RYAKU   COL6")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"      ,NULL     COL7")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,DAT.KOJ  COL7")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"      ,NULL       COL8")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,KOJ.RYAKU  COL8")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"      ,DAT.KOJ_UW  COL9")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,NULL        COL9")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"      ,KJU.RYAKU  COL10")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,NULL       COL10")
+            End Select
+
+
+            xSqlTxtSelect.AppendLine($"      ,DAT.KAIS      COL11")
+            xSqlTxtSelect.AppendLine($"      ,KAI.RYAKU     COL12")
+            xSqlTxtSelect.AppendLine($"      ,DAT.BMN_UW    COL13")
+            xSqlTxtSelect.AppendLine($"      ,BMU.RYAKU     COL14")
+            xSqlTxtSelect.AppendLine($"      ,DAT.SKOJ      COL15")
+            xSqlTxtSelect.AppendLine($"      ,SKO.RYAKU     COL16")
+            xSqlTxtSelect.AppendLine($"      ,DAT.KOJ       COL17")
+            xSqlTxtSelect.AppendLine($"      ,KOJ.RYAKU     COL18")
+            xSqlTxtSelect.AppendLine($"      ,DAT.KOJ_UW    COL19")
+            xSqlTxtSelect.AppendLine($"      ,KJU.RYAKU     COL20")
+            xSqlTxtSelect.AppendLine($"      ,DAT.YOUSO     COL21")
+            xSqlTxtSelect.AppendLine($"      ,YOU.RYAKU     COL22")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"      ,CONCAT(")
+                    xSqlTxtSelect.AppendLine($"      		(CASE DAT.SKOJ")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL THEN N'zzzzzzzzzz'")
+                    xSqlTxtSelect.AppendLine($"      			ELSE  dbo.lPad_nVarchar( dbo.Trim2_nVarchar(3,DAT.SKOJ),10,'0')")
+                    xSqlTxtSelect.AppendLine($"      			END)")
+                    xSqlTxtSelect.AppendLine($"      		,(CASE DAT.YOUSO")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL THEN N'999999999'")
+                    xSqlTxtSelect.AppendLine($"      			ELSE dbo.lPad_nVarchar( DAT.YOUSO,9,'0')")
+                    xSqlTxtSelect.AppendLine($"      			END)")
+                    xSqlTxtSelect.AppendLine($"      		,DAT.SORT_KBN")
+                    xSqlTxtSelect.AppendLine($"      	) AS COL23")
+                Case condition.KOJ_SHUKEI_OPT = 1
+                    xSqlTxtSelect.AppendLine($"      ,CONCAT(")
+                    xSqlTxtSelect.AppendLine($"      		(CASE DAT.KOJ")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL")
+                    xSqlTxtSelect.AppendLine($"      				THEN 'zzzzzzzzzz'")
+                    xSqlTxtSelect.AppendLine($"      				ELSE  dbo.lPad_nVarchar( dbo.Trim2_nVarchar(3,DAT.KOJ),10,'0')")
+                    xSqlTxtSelect.AppendLine($"      		END)")
+                    xSqlTxtSelect.AppendLine($"      		,(CASE DAT.YOUSO")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL")
+                    xSqlTxtSelect.AppendLine($"      				THEN '999999999'")
+                    xSqlTxtSelect.AppendLine($"      			ELSE dbo.lPad_nVarchar( DAT.YOUSO,9,'0')")
+                    xSqlTxtSelect.AppendLine($"      		END)")
+                    xSqlTxtSelect.AppendLine($"      		,DAT.SORT_KBN")
+                    xSqlTxtSelect.AppendLine($"      	) AS COL23")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"      ,CONCAT(")
+                    xSqlTxtSelect.AppendLine($"      		(CASE DAT.KOJ")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL THEN 'zzzzzzzzzz'")
+                    xSqlTxtSelect.AppendLine($"      			ELSE  dbo.lPad_nVarchar( dbo.Trim2_nVarchar(3,DAT.KOJ),10,'0')")
+                    xSqlTxtSelect.AppendLine($"      		END)")
+                    xSqlTxtSelect.AppendLine($"      		,(CASE DAT.KOJ_UW")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL THEN 'zzzzzzzzzz'")
+                    xSqlTxtSelect.AppendLine($"      			ELSE  dbo.lPad_nVarchar( dbo.Trim2_nVarchar(3,DAT.KOJ_UW),10,'0')")
+                    xSqlTxtSelect.AppendLine($"      		END)")
+                    xSqlTxtSelect.AppendLine($"      		,(CASE DAT.YOUSO")
+                    xSqlTxtSelect.AppendLine($"      			WHEN NULL THEN '999999999'")
+                    xSqlTxtSelect.AppendLine($"      			ELSE dbo.lPad_nVarchar( DAT.YOUSO,9,'0')")
+                    xSqlTxtSelect.AppendLine($"      		END)")
+                    xSqlTxtSelect.AppendLine($"      		,DAT.SORT_KBN")
+                    xSqlTxtSelect.AppendLine($"      	) AS COL23")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"    ,DAT.DDATE       COL24")
+            xSqlTxtSelect.AppendLine($"    ,DAT.DNO         COL25")
+            xSqlTxtSelect.AppendLine($"    ,DAT.GNO         COL26")
+            xSqlTxtSelect.AppendLine($"    ,DAT.GYS         COL27")
+            xSqlTxtSelect.AppendLine($"    ,TOR.RYAKU       COL28")
+            xSqlTxtSelect.AppendLine($"    ,DAT.TEKI        COL29")
+            xSqlTxtSelect.AppendLine($"    ,DAT.KARI_KIN    COL30")
+            xSqlTxtSelect.AppendLine($"    ,DAT.KASHI_KIN   COL31")
+            xSqlTxtSelect.AppendLine($"    ,DAT.KIN         COL32")
+            xSqlTxtSelect.AppendLine($"    ,DAT.ZEI         COL33")
+            xSqlTxtSelect.AppendLine($"    ,DAT.KEI         COL34")
+            xSqlTxtSelect.AppendLine($"    ,DAT.EDIT_KBN    COL35")
+
+            xSqlTxtSelect.AppendLine($"FROM")
+            xSqlTxtSelect.AppendLine($"(")
+            xSqlTxtSelect.AppendLine($"	SELECT")
+
+            xSqlTxtSelect.AppendLine($"        SUB.KAIS")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.BMN_UW")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.SKOJ")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.KOJ")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.KOJ_UW")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.YOUSO")
+            xSqlTxtSelect.AppendLine($"	      ,1 SORT_KBN")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.DDATE")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.DNO")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.GNO")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.GYS")
+            xSqlTxtSelect.AppendLine($"	      ,SUB.TEKI")
+            xSqlTxtSelect.AppendLine($"	      ,SUM(SUB.KARI_KIN) KARI_KIN")
+            xSqlTxtSelect.AppendLine($"	      ,SUM(SUB.KASHI_KIN) KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"	      ,SUM(SUB.KIN) KIN")
+            xSqlTxtSelect.AppendLine($"	      ,SUM(SUB.ZEI) ZEI")
+            xSqlTxtSelect.AppendLine($"	      ,SUM(SUB.KEI) KEI")
+            xSqlTxtSelect.AppendLine($"	      ,9 EDIT_KBN")
+
+            xSqlTxtSelect.AppendLine($"	FROM")
+            xSqlTxtSelect.AppendLine($"	(")
+            xSqlTxtSelect.AppendLine($"		SELECT")
+
+            xSqlTxtSelect.AppendLine($"		         FKZ.KAIS    KAIS")
+            xSqlTxtSelect.AppendLine($"             ,'0'         BMN_UW")
+            xSqlTxtSelect.AppendLine($"             ,WMS.SKOJ    SKOJ")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"        ,NULL        KOJ")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"        ,FKZ.KOJ     KOJ")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"        ,FKZ.KOJ_UW  KOJ_UW")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"        ,NULL        KOJ_UW")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"                ,MYS.CODE                          YOUSO")
+            xSqlTxtSelect.AppendLine($"                ,CAST(NULL AS DATETIME2(7))        DDATE")
+            xSqlTxtSelect.AppendLine($"                ,CAST(NULL AS NUMERIC(38 , 10))    DNO")
+            xSqlTxtSelect.AppendLine($"                ,CAST(NULL AS NUMERIC(38 , 10))    GNO")
+            xSqlTxtSelect.AppendLine($"                ,NULL                              GYS")
+            xSqlTxtSelect.AppendLine($"                ,N'前月迄累計'                      TEKI")
+            xSqlTxtSelect.AppendLine($"				   ,SUM(CASE FKZ.TS_KBN")
+            xSqlTxtSelect.AppendLine($"						    WHEN 1 THEN FKZ.KIN")
+            xSqlTxtSelect.AppendLine($"						    ELSE 0")
+            xSqlTxtSelect.AppendLine($"					    END) KARI_KIN")
+            xSqlTxtSelect.AppendLine($"				   ,SUM(CASE FKZ.TS_KBN")
+            xSqlTxtSelect.AppendLine($"						    WHEN 2 THEN FKZ.KIN")
+            xSqlTxtSelect.AppendLine($"						    ELSE 0")
+            xSqlTxtSelect.AppendLine($"					    END) KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"                ,0        KIN")
+            xSqlTxtSelect.AppendLine($"                ,0        ZEI")
+            xSqlTxtSelect.AppendLine($"                ,0        KEI")
+
+            xSqlTxtSelect.AppendLine($"		FROM D_SHIWAKE_UW_GEN  FKZ")
+            xSqlTxtSelect.AppendLine($"		INNER JOIN M_YOUSO MYS")
+            xSqlTxtSelect.AppendLine($"		    ON ")
+            xSqlTxtSelect.AppendLine($"		           ((FKZ.KMK = MYS.KMK_MISEI")
+            xSqlTxtSelect.AppendLine($"		           AND FKZ.HOJ = MYS.HOJ_MISEI)")
+            xSqlTxtSelect.AppendLine($"		           OR (FKZ.KMK = MYS.KMK_KANSEI))")
+
+            xSqlTxtSelect.AppendLine($"    INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxtSelect.AppendLine($"		    ON ")
+            xSqlTxtSelect.AppendLine($"		           FKZ.KAIS = WMS.KAIS")
+            xSqlTxtSelect.AppendLine($"		           AND FKZ.KOJ = WMS.KOJ")
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"		       AND FKZ.KOJ_UW = WMS.KOJ_UW")
+            End If
+
+            xSqlTxtSelect.AppendLine($"    WHERE")
+
+            xSqlTxtSelect.AppendLine($"                FKZ.NENGETU < @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                AND MYS.CODE @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND FKZ.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+
+            xSqlTxtSelect.AppendLine($"    GROUP BY")
+            xSqlTxtSelect.AppendLine($"                FKZ.KAIS")
+            xSqlTxtSelect.AppendLine($"                ,WMS.SKOJ")
+            If condition.KOJ_SHUKEI_OPT <> 0 Then
+                xSqlTxtSelect.AppendLine($"            ,FKZ.KOJ")
+            End If
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"            ,FKZ.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"                ,MYS.CODE")
+
+            xSqlTxtSelect.AppendLine($"    UNION ALL")
+            xSqlTxtSelect.AppendLine($"    SELECT ")
+            xSqlTxtSelect.AppendLine($"                 GEN.KAIS        KAIS")
+            xSqlTxtSelect.AppendLine($"                 ,'0'            BMN_UW")
+            xSqlTxtSelect.AppendLine($"                 ,WMS.SKOJ       SKOJ")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"         ,NULL           KOJ")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"         ,GEN.KOJ        KOJ")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"         ,GEN.KOJ_UW     KOJ_UW")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"         ,NULL           KOJ_UW")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"                 ,GEN.KOJ_UW                         KOJ_UW")
+            xSqlTxtSelect.AppendLine($"                 ,GEN.YOUSO                          YOUSO")
+            xSqlTxtSelect.AppendLine($"                 ,CAST(NULL AS DATETIME2(7))         DDATE")
+            xSqlTxtSelect.AppendLine($"                 ,CAST(NULL AS NUMERIC(38 , 10))     DNO")
+            xSqlTxtSelect.AppendLine($"                 ,CAST(NULL AS NUMERIC(38 , 10))     GNO")
+            xSqlTxtSelect.AppendLine($"                 ,NULL                               GYS")
+            xSqlTxtSelect.AppendLine($"                 ,N'前月迄累計'                       TEKI")
+            xSqlTxtSelect.AppendLine($"                 ,0                                  KARI_KIN")
+            xSqlTxtSelect.AppendLine($"                 ,0                                  KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"                 ,SUM(MISEI_KIN + KANSEI_KIN)        KIN")
+            xSqlTxtSelect.AppendLine($"                 ,SUM(MISEI_ZEI + KANSEI_ZEI)        ZEI")
+            xSqlTxtSelect.AppendLine($"                 ,SUM(MISEI_KIN + KANSEI_KIN + MISEI_ZEI + KANSEI_ZEI)    KEI")
+
+            xSqlTxtSelect.AppendLine($"     FROM F_GEN GEN ")
+            xSqlTxtSelect.AppendLine($"        INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxtSelect.AppendLine($"		        ON ")
+            xSqlTxtSelect.AppendLine($"		            GEN.KAIS = WMS.KAIS")
+            xSqlTxtSelect.AppendLine($"		            AND GEN.KOJ = WMS.KOJ")
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"		        AND GEN.KOJ_UW = WMS.KOJ_UW")
+            End If
+
+            xSqlTxtSelect.AppendLine($"     WHERE")
+            xSqlTxtSelect.AppendLine($"                SUG.NENGETU @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                AND SUG.YOUSO @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND SUG.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.USER_NO   =  @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.SESSION_ID  =  @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.PROGRAM_CODE =  @PROGRAM_CODE@")
+
+            xSqlTxtSelect.AppendLine($"            GROUP BY")
+            xSqlTxtSelect.AppendLine($"                GEN.KAIS")
+            xSqlTxtSelect.AppendLine($"               ,WMS.SKOJ")
+            If condition.KOJ_SHUKEI_OPT <> 0 Then
+                xSqlTxtSelect.AppendLine($"           ,GEN.KOJ")
+            End If
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"           ,GEN.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"               ,GEN.YOUSO")
+            xSqlTxtSelect.AppendLine($"    ) SUB")
+
+            xSqlTxtSelect.AppendLine($"    GROUP BY")
+            xSqlTxtSelect.AppendLine($"           SUB.KAIS")
+            xSqlTxtSelect.AppendLine($"          ,SUB.BMN_UW")
+            xSqlTxtSelect.AppendLine($"          ,SUB.SKOJ")
+            xSqlTxtSelect.AppendLine($"          ,SUB.KOJ")
+            xSqlTxtSelect.AppendLine($"          ,SUB.KOJ_UW")
+            xSqlTxtSelect.AppendLine($"          ,SUB.YOUSO")
+            xSqlTxtSelect.AppendLine($"          ,SUB.DDATE")
+            xSqlTxtSelect.AppendLine($"          ,SUB.DNO")
+            xSqlTxtSelect.AppendLine($"          ,SUB.GNO")
+            xSqlTxtSelect.AppendLine($"          ,SUB.GYS")
+            xSqlTxtSelect.AppendLine($"          ,SUB.TEKI")
+
+            xSqlTxtSelect.AppendLine($"    UNION ALL")
+            xSqlTxtSelect.AppendLine($"    SELECT")
+
+            xSqlTxtSelect.AppendLine($"			 SUG.KAIS")
+            xSqlTxtSelect.AppendLine($"			,SUG.BMN_UW")
+            xSqlTxtSelect.AppendLine($"			,WMS.SKOJ")
+            xSqlTxtSelect.AppendLine($"			,SUG.KOJ")
+            xSqlTxtSelect.AppendLine($"			,SUG.KOJ_UW")
+            xSqlTxtSelect.AppendLine($"			,SUG.YOUSO")
+            xSqlTxtSelect.AppendLine($"			,2 SORT_KBN")
+            xSqlTxtSelect.AppendLine($"			,SUG.DDATE")
+            xSqlTxtSelect.AppendLine($"			,SUG.DNO")
+            xSqlTxtSelect.AppendLine($"			,SUG.GNO")
+            xSqlTxtSelect.AppendLine($"			,SUG.TOR GYS")
+            xSqlTxtSelect.AppendLine($"			,SUG.TEKI_NAME TEKI")
+            xSqlTxtSelect.AppendLine($"			,(")
+            xSqlTxtSelect.AppendLine($"				CASE SUG.TS_KBN")
+            xSqlTxtSelect.AppendLine($"					WHEN 1")
+            xSqlTxtSelect.AppendLine($"						THEN SUG.KIN")
+            xSqlTxtSelect.AppendLine($"					ELSE 0")
+            xSqlTxtSelect.AppendLine($"					END")
+            xSqlTxtSelect.AppendLine($"				) KARI_KIN")
+            xSqlTxtSelect.AppendLine($"			,(")
+            xSqlTxtSelect.AppendLine($"				CASE SUG.TS_KBN")
+            xSqlTxtSelect.AppendLine($"					WHEN 2")
+            xSqlTxtSelect.AppendLine($"						THEN SUG.KIN")
+            xSqlTxtSelect.AppendLine($"					ELSE 0")
+            xSqlTxtSelect.AppendLine($"					END")
+            xSqlTxtSelect.AppendLine($"				) KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"			,(")
+            xSqlTxtSelect.AppendLine($"				CASE SUG.TS_KBN")
+            xSqlTxtSelect.AppendLine($"					WHEN 1")
+            xSqlTxtSelect.AppendLine($"						THEN SUG.KIN")
+            xSqlTxtSelect.AppendLine($"					ELSE SUG.KIN * - 1")
+            xSqlTxtSelect.AppendLine($"					END")
+            xSqlTxtSelect.AppendLine($"				) KIN")
+            xSqlTxtSelect.AppendLine($"			,(")
+            xSqlTxtSelect.AppendLine($"				CASE SUG.TS_KBN")
+            xSqlTxtSelect.AppendLine($"					WHEN 1")
+            xSqlTxtSelect.AppendLine($"						THEN SUG.ZEI")
+            xSqlTxtSelect.AppendLine($"					ELSE")
+            xSqlTxtSelect.AppendLine($"						 SUG.ZEI * - 1")
+            xSqlTxtSelect.AppendLine($"					END")
+            xSqlTxtSelect.AppendLine($"				) ZEI")
+            xSqlTxtSelect.AppendLine($"			,(")
+            xSqlTxtSelect.AppendLine($"				CASE SUG.TS_KBN")
+            xSqlTxtSelect.AppendLine($"					WHEN 1")
+            xSqlTxtSelect.AppendLine($"						THEN SUG.KIN+SUG.ZEI")
+            xSqlTxtSelect.AppendLine($"					ELSE")
+            xSqlTxtSelect.AppendLine($"						 (SUG.KIN + SUG.ZEI) * - 1")
+            xSqlTxtSelect.AppendLine($"					END")
+            xSqlTxtSelect.AppendLine($"				) KEI")
+            xSqlTxtSelect.AppendLine($"			,0 EDIT_KBN")
+            xSqlTxtSelect.AppendLine($"		FROM D_SHIWAKE_UW_GEN SUG")
+            xSqlTxtSelect.AppendLine($"     INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxtSelect.AppendLine($"		    ON ")
+            xSqlTxtSelect.AppendLine($"		           SUG.KAIS = WMS.KAIS")
+            xSqlTxtSelect.AppendLine($"		           AND SUG.KOJ = WMS.KOJ")
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"		       AND SUG.KOJ_UW = WMS.KOJ_UW")
+            End If
+
+            xSqlTxtSelect.AppendLine($"    WHERE")
+            xSqlTxtSelect.AppendLine($"                SUG.NENGETU @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                AND SUG.YOUSO @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND SUG.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.USER_NO   =  @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.SESSION_ID  =  @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.PROGRAM_CODE =  @PROGRAM_CODE@")
+
+            xSqlTxtSelect.AppendLine($"    UNION ALL")
+            xSqlTxtSelect.AppendLine($"    SELECT")
+            xSqlTxtSelect.AppendLine($"                 SUB.KAIS")
+            xSqlTxtSelect.AppendLine($"                ,SUB.BMN_UW")
+            xSqlTxtSelect.AppendLine($"                ,SUB.SKOJ")
+            xSqlTxtSelect.AppendLine($"                ,SUB.KOJ")
+            xSqlTxtSelect.AppendLine($"                ,SUB.KOJ_UW")
+            xSqlTxtSelect.AppendLine($"                ,SUB.YOUSO")
+            xSqlTxtSelect.AppendLine($"                ,3 SORT_KBN")
+            xSqlTxtSelect.AppendLine($"                ,SUB.DDATE")
+            xSqlTxtSelect.AppendLine($"                ,SUB.DNO")
+            xSqlTxtSelect.AppendLine($"                ,SUB.GNO")
+            xSqlTxtSelect.AppendLine($"                ,SUB.GYS")
+            xSqlTxtSelect.AppendLine($"                ,SUB.TEKI")
+            xSqlTxtSelect.AppendLine($"                ,SUM(SUB.KARI_KIN) KARI_KIN")
+            xSqlTxtSelect.AppendLine($"                ,SUM(SUB.KASHI_KIN) KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"                ,SUM(SUB.KIN) KIN")
+            xSqlTxtSelect.AppendLine($"                ,SUM(SUB.ZEI) ZEI")
+            xSqlTxtSelect.AppendLine($"                ,SUM(SUB.KEI) KEI")
+            xSqlTxtSelect.AppendLine($"                ,9 EDIT_KBN")
+
+            xSqlTxtSelect.AppendLine($"    FROM")
+            xSqlTxtSelect.AppendLine($"    (")
+            xSqlTxtSelect.AppendLine($"         SELECT")
+
+            xSqlTxtSelect.AppendLine($"                FKZ.KAIS        KAIS")
+            xSqlTxtSelect.AppendLine($"                ,'0'            BMN_UW")
+            xSqlTxtSelect.AppendLine($"                ,WMS.SKOJ       SKOJ")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"        ,NULL           KOJ")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"        ,FKZ.KOJ        KOJ")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"        ,FKZ.KOJ_UW     KOJ_UW")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"        ,NULL           KOJ_UW")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"                ,MYS.CODE                      YOUSO")
+            xSqlTxtSelect.AppendLine($"				   ,CAST(NULL AS DATETIME2(7))    DDATE")
+            xSqlTxtSelect.AppendLine($"				   ,CAST(NULL AS NUMERIC(38, 10)) DNO")
+            xSqlTxtSelect.AppendLine($"				   ,CAST(NULL AS NUMERIC(38, 10)) GNO")
+            xSqlTxtSelect.AppendLine($"                ,NULL                          GYS")
+            xSqlTxtSelect.AppendLine($"                ,N'科目計'                     TEKI")
+            xSqlTxtSelect.AppendLine($"				   ,SUM(CASE FKZ.TS_KBN")
+            xSqlTxtSelect.AppendLine($"				   		    WHEN 1")
+            xSqlTxtSelect.AppendLine($"				   			    THEN FKZ.KIN")
+            xSqlTxtSelect.AppendLine($"				   		    ELSE 0")
+            xSqlTxtSelect.AppendLine($"				   		END) KARI_KIN")
+            xSqlTxtSelect.AppendLine($"				   ,SUM(CASE FKZ.TS_KBN")
+            xSqlTxtSelect.AppendLine($"				   		    WHEN 2")
+            xSqlTxtSelect.AppendLine($"				   			    THEN FKZ.KIN")
+            xSqlTxtSelect.AppendLine($"				   		    ELSE 0")
+            xSqlTxtSelect.AppendLine($"				   		END) KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"                ,0        KIN")
+            xSqlTxtSelect.AppendLine($"                ,0        ZEI")
+            xSqlTxtSelect.AppendLine($"                ,0        KEI")
+
+            xSqlTxtSelect.AppendLine($"        FROM D_SHIWAKE_UW_GEN FKZ")
+            xSqlTxtSelect.AppendLine($"		   INNER JOIN M_YOUSO MYS")
+            xSqlTxtSelect.AppendLine($"		        ON ")
+            xSqlTxtSelect.AppendLine($"		           ((FKZ.KMK = MYS.KMK_MISEI")
+            xSqlTxtSelect.AppendLine($"		           AND FKZ.HOJ = MYS.HOJ_MISEI)")
+            xSqlTxtSelect.AppendLine($"		           OR (FKZ.KMK = MYS.KMK_KANSEI))")
+
+            xSqlTxtSelect.AppendLine($"        INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxtSelect.AppendLine($"		        ON ")
+            xSqlTxtSelect.AppendLine($"		                FKZ.KAIS = WMS.KAIS")
+            xSqlTxtSelect.AppendLine($"		                AND FKZ.KOJ = WMS.KOJ")
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"		            AND FKZ.KOJ_UW = WMS.KOJ_UW")
+            End If
+
+            xSqlTxtSelect.AppendLine($"        WHERE")
+            xSqlTxtSelect.AppendLine($"                     SUG.NENGETU @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                     AND SUG.YOUSO @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                     AND SUG.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                     AND WMS.USER_NO   =  @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                     AND WMS.SESSION_ID  =  @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                     AND WMS.PROGRAM_CODE =  @PROGRAM_CODE@")
+
+            xSqlTxtSelect.AppendLine($"        GROUP BY")
+            xSqlTxtSelect.AppendLine($"                     FKZ.KAIS")
+            xSqlTxtSelect.AppendLine($"                     ,WMS.SKOJ")
+            If condition.KOJ_SHUKEI_OPT <> 0 Then
+                xSqlTxtSelect.AppendLine($"                 ,FKZ.KOJ")
+            End If
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"                 ,FKZ.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"                     ,MYS.CODE")
+
+            xSqlTxtSelect.AppendLine($"        UNION ALL")
+            xSqlTxtSelect.AppendLine($"        SELECT")
+            xSqlTxtSelect.AppendLine($"					     GEN.KAIS   KAIS")
+            xSqlTxtSelect.AppendLine($"					    ,'0'        BMN_UW")
+            xSqlTxtSelect.AppendLine($"					    ,WMS.SKOJ   SKOJ")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"				,NULL KOJ")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"				,GEN.KOJ KOJ")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"				,GEN.KOJ_UW KOJ_UW")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"				,NULL KOJ_UW")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"					    ,GEN.YOUSO                      YOUSO")
+            xSqlTxtSelect.AppendLine($"					    ,CAST(NULL AS DATETIME2(7))     DDATE")
+            xSqlTxtSelect.AppendLine($"					    ,CAST(NULL AS NUMERIC(38, 10))  DNO")
+            xSqlTxtSelect.AppendLine($"					    ,CAST(NULL AS NUMERIC(38, 10))  DNO")
+            xSqlTxtSelect.AppendLine($"					    ,NULL                           GYS")
+            xSqlTxtSelect.AppendLine($"					    ,N'科目計'                      TEKI")
+            xSqlTxtSelect.AppendLine($"					    ,0                              KARI_KIN")
+            xSqlTxtSelect.AppendLine($"					    ,0                              KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"					    ,SUM(MISEI_KIN + KANSEI_KIN)    KIN")
+            xSqlTxtSelect.AppendLine($"					    ,SUM(MISEI_ZEI + KANSEI_ZEI)    ZEI")
+            xSqlTxtSelect.AppendLine($"					    ,SUM(MISEI_KIN + KANSEI_KIN + MISEI_ZEI + KANSEI_ZEI) KEI")
+
+            xSqlTxtSelect.AppendLine($"        		FROM F_GEN GEN")
+            xSqlTxtSelect.AppendLine($"             INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxtSelect.AppendLine($"		            ON ")
+            xSqlTxtSelect.AppendLine($"		                GEN.KAIS = WMS.KAIS")
+            xSqlTxtSelect.AppendLine($"		                AND GEN.KOJ = WMS.KOJ")
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"		            AND GEN.KOJ_UW = WMS.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"             WHERE")
+            xSqlTxtSelect.AppendLine($"                     SUG.NENGETU @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                     AND SUG.YOUSO @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                     AND SUG.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                     AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                     AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                     AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+
+            xSqlTxtSelect.AppendLine($"             GROUP BY")
+            xSqlTxtSelect.AppendLine($"                     GEN.KAIS")
+            xSqlTxtSelect.AppendLine($"                    ,WMS.SKOJ")
+            If condition.KOJ_SHUKEI_OPT <> 0 Then
+                xSqlTxtSelect.AppendLine($"                ,GEN.KOJ")
+            End If
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"                ,GEN.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"                    ,GEN.YOUSO")
+            xSqlTxtSelect.AppendLine($"             ) SUB")
+
+            xSqlTxtSelect.AppendLine($"    GROUP BY")
+            xSqlTxtSelect.AppendLine($"          SUB.KAIS")
+            xSqlTxtSelect.AppendLine($"         ,SUB.BMN_UW")
+            xSqlTxtSelect.AppendLine($"         ,SUB.SKOJ")
+            xSqlTxtSelect.AppendLine($"         ,SUB.KOJ")
+            xSqlTxtSelect.AppendLine($"         ,SUB.KOJ_UW")
+            xSqlTxtSelect.AppendLine($"         ,SUB.YOUSO")
+            xSqlTxtSelect.AppendLine($"         ,SUB.DDATE")
+            xSqlTxtSelect.AppendLine($"         ,SUB.DNO")
+            xSqlTxtSelect.AppendLine($"         ,SUB.GNO")
+            xSqlTxtSelect.AppendLine($"         ,SUB.GYS")
+            xSqlTxtSelect.AppendLine($"         ,SUB.TEKI")
+
+            xSqlTxtSelect.AppendLine($"    UNION ALL")
+            xSqlTxtSelect.AppendLine($"    SELECT")
+            xSqlTxtSelect.AppendLine($"			 GEN.KAIS")
+            xSqlTxtSelect.AppendLine($"			,'0'        BMN_UW")
+            xSqlTxtSelect.AppendLine($"			,WMS.SKOJ   SKOJ")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxtSelect.AppendLine($"	,NULL       KOJ")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"	,GEN.KOJ    KOJ")
+            End Select
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"	,GEN.KOJ_UW KOJ_UW")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"	,NULL       KOJ_UW")
+            End Select
+
+            xSqlTxtSelect.AppendLine($"				,MAX(GEN.YOUSO) YOUSO --,TO_NUMBER(NULL) YOUSO")
+            xSqlTxtSelect.AppendLine($"				,9 SORT_KBN")
+            xSqlTxtSelect.AppendLine($"				,CAST(NULL AS DATETIME2(7))              DDATE")
+            xSqlTxtSelect.AppendLine($"				,CAST(NULL AS NUMERIC(38, 10))           DNO")
+            xSqlTxtSelect.AppendLine($"				,CAST(NULL AS NUMERIC(38, 10))           GNO")
+            xSqlTxtSelect.AppendLine($"				,NULL                                    GYS")
+            xSqlTxtSelect.AppendLine($"				,N'工事計'                               TEKI")
+            xSqlTxtSelect.AppendLine($"				,CAST(NULL AS NUMERIC(38, 10))           KARI_KIN")
+            xSqlTxtSelect.AppendLine($"				,CAST(NULL AS NUMERIC(38, 10))           KASHI_KIN")
+            xSqlTxtSelect.AppendLine($"				,SUM(GEN.MISEI_KIN + GEN.KANSEI_KIN)     KIN")
+            xSqlTxtSelect.AppendLine($"				,SUM(GEN.MISEI_ZEI + GEN.KANSEI_ZEI)     ZEI")
+            xSqlTxtSelect.AppendLine($"				,SUM(GEN.MISEI_KIN + GEN.KANSEI_KIN + GEN.MISEI_ZEI + GEN.KANSEI_ZEI) KEI")
+            xSqlTxtSelect.AppendLine($"				,9 EDIT_KBN")
+
+            xSqlTxtSelect.AppendLine($"        		FROM F_GEN GEN")
+            xSqlTxtSelect.AppendLine($"             INNER JOIN {W_MASTER} AS WMS")
+            xSqlTxtSelect.AppendLine($"		            ON ")
+            xSqlTxtSelect.AppendLine($"		               GEN.KAIS = WMS.KAIS")
+            xSqlTxtSelect.AppendLine($"		               AND GEN.KOJ = WMS.KOJ")
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"		           AND GEN.KOJ_UW = WMS.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"       WHERE")
+            xSqlTxtSelect.AppendLine($"                SUG.NENGETU @DATE_FROM@")
+            xSqlTxtSelect.AppendLine($"                AND SUG.YOUSO @YOUSO_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND SUG.TOR @TOR_DOM@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.USER_NO = @SYSUSERNO@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.SESSION_ID = @SESSION_ID@")
+            xSqlTxtSelect.AppendLine($"                AND WMS.PROGRAM_CODE = @PROGRAM_CODE@")
+
+            xSqlTxtSelect.AppendLine($"        GROUP BY")
+            xSqlTxtSelect.AppendLine($"                GEN.KAIS")
+            xSqlTxtSelect.AppendLine($"               ,WMS.SKOJ")
+            If condition.KOJ_SHUKEI_OPT <> 0 Then
+                xSqlTxtSelect.AppendLine($"           ,GEN.KOJ")
+            End If
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxtSelect.AppendLine($"           ,GEN.KOJ_UW")
+            End If
+            xSqlTxtSelect.AppendLine($"         ) DAT")
+
+
+
+
+
+
+
+
+
+            xSqlTxtSelect.AppendLine($"    LEFT JOIN M_SKOJ SKO")
+            xSqlTxtSelect.AppendLine($"      ON")
+            xSqlTxtSelect.AppendLine($"           DAT.SKOJ = SKO.CODE")
+
+            xSqlTxtSelect.AppendLine($"    LEFT JOIN M_KOJ KOJ")
+            xSqlTxtSelect.AppendLine($"      ON")
+            xSqlTxtSelect.AppendLine($"           DAT.KOJ = KOJ.CODE")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxtSelect.AppendLine($"    INNER JOIN M_KOJ_UW KJU")
+                    xSqlTxtSelect.AppendLine($"      ON")
+                    xSqlTxtSelect.AppendLine($"           DAT.KOJ = KJU.KOJ")
+                    xSqlTxtSelect.AppendLine($"           AND DAT.KOJ_UW = KJU.CODE")
+                Case Else
+                    xSqlTxtSelect.AppendLine($"    LEFT JOIN M_KOJ_UW KJU")
+                    xSqlTxtSelect.AppendLine($"      ON")
+                    xSqlTxtSelect.AppendLine($"           DAT.KOJ = KJU.KOJ")
+                    xSqlTxtSelect.AppendLine($"           AND DAT.KOJ_UW = KJU.CODE")
+            End Select
+
+
+            xSqlTxtSelect.AppendLine($"    LEFT JOIN M_BMN_UW BMU")
+            xSqlTxtSelect.AppendLine($"      ON")
+            xSqlTxtSelect.AppendLine($"           DAT.BMN_UW = BMU.CODE")
+
+
+
+
+
+            'xSqlTxtSelect.AppendLine($", SUB.HEAD_KEY AS COL2")
+            'xSqlTxtSelect.AppendLine($", SUB.HEAD_NENGETU AS COL3")
+            'xSqlTxtSelect.AppendLine($", SUB.HEAD_KAIS AS COL4")
+            'xSqlTxtSelect.AppendLine($", KAI1.RYAKU AS COL5")
+            'xSqlTxtSelect.AppendLine($", SUB.TAISYO_BMN_UW AS COL6")
+            'xSqlTxtSelect.AppendLine($", BMN1.RYAKU AS COL7")
+            'xSqlTxtSelect.AppendLine($", SUB.S_BMN_UW AS COL8")
+            'xSqlTxtSelect.AppendLine($", BMN2.RYAKU AS COL9")
+            'xSqlTxtSelect.AppendLine($", SUB.HEAD_SKOJ AS COL10")
+            'Select Case True
+            '    Case condition.KOJ_SHUKEI_OPT = 0
+            '        xSqlTxtSelect.AppendLine($", MST.RYAKU AS COL11")
+            '    Case Else
+            '        xSqlTxtSelect.AppendLine($", SKO.RYAKU AS COL11")
+
+            'End Select
+            'xSqlTxtSelect.AppendLine($", SUB.HEAD_KOJ AS COL12")
+            'Select Case True
+            '    Case condition.KOJ_SHUKEI_OPT = 0
+            '        xSqlTxtSelect.AppendLine($", CAST(NULL AS NVARCHAR) AS COL13")
+            '    Case condition.KOJ_SHUKEI_OPT = 2
+            '        xSqlTxtSelect.AppendLine($", KOJ1.RYAKU AS COL13")
+            '    Case Else
+            '        xSqlTxtSelect.AppendLine($", MST.RYAKU AS COL13")
+
+            'End Select
+            'xSqlTxtSelect.AppendLine($", SUB.HEAD_KOJ_UW AS COL14")
+            'Select Case True
+            '    Case condition.KOJ_SHUKEI_OPT = 2
+            '        xSqlTxtSelect.AppendLine($", MST.RYAKU AS COL15")
+            '    Case Else
+            '        xSqlTxtSelect.AppendLine($", CAST(NULL AS NVARCHAR) AS COL15")
+
+            'End Select
+            'xSqlTxtSelect.AppendLine($", MST.HACH AS COL16")
+            'xSqlTxtSelect.AppendLine($", TOR1.RYAKU AS COL17")
+            'xSqlTxtSelect.AppendLine($", MST.BMN_UW AS COL18")
+            'xSqlTxtSelect.AppendLine($", BMN3.RYAKU AS COL19")
+            'xSqlTxtSelect.AppendLine($", MST.KOJ_TANT AS COL20")
+            'xSqlTxtSelect.AppendLine($", SYA1.RYAKU AS COL21")
+            'xSqlTxtSelect.AppendLine($", CAST(CASE MST.KOUKI_S WHEN @SYS_MAX_DATE@ THEN CAST(NULL AS DATETIME2(7)) ELSE MST.KOUKI_S END AS DATETIME2(7)) AS COL22")
+            'xSqlTxtSelect.AppendLine($", CAST(CASE MST.KOUKI_E WHEN @SYS_MAX_DATE@ THEN CAST(NULL AS DATETIME2(7)) ELSE MST.KOUKI_E END AS DATETIME2(7)) AS COL23")
+            'xSqlTxtSelect.AppendLine($", CAST(CASE MST.SYUNKO WHEN @SYS_MAX_DATE@ THEN CAST(NULL AS DATETIME2(7)) ELSE MST.SYUNKO END AS DATETIME2(7)) AS COL24")
+            'xSqlTxtSelect.AppendLine($", CAST(CASE MST.KAN_FURI WHEN @SYS_MAX_DATE@ THEN CAST(NULL AS DATETIME2(7)) ELSE MST.KAN_FURI END AS DATETIME2(7)) AS COL25")
+            'xSqlTxtSelect.AppendLine($", MST.UKEOI_KBN AS COL26")
+            'xSqlTxtSelect.AppendLine($", UKEOI_KBN.RYAKU AS COL27")
+            'xSqlTxtSelect.AppendLine($", MST.BIKOU1 AS COL28")
+            'xSqlTxtSelect.AppendLine($", MST.BIKOU2 AS COL29")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_KEIY_KIN AS COL30")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_KEIY_KIN AS COL31")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_KEIY_KIN_HEN AS COL32")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_KEIY_KIN_HEN AS COL33")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0) AS COL34")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) AS COL35")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_KEIY_ZEI AS COL36")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_KEIY_ZEI AS COL37")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_KEIY_ZEI_HEN AS COL38")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_KEIY_ZEI_HEN AS COL39")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0) AS COL40")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) AS COL41")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0) + ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0) AS COL42")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) + ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) AS COL43")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_JIK_KIN AS COL44")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_JIK_KIN AS COL45")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0) - ISNULL(WKH.TOU_JIK_KIN , 0) AS COL46")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ISNULL(WKH.RUI_JIK_KIN , 0) AS COL47")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0) - ISNULL(WKH.TOU_JIK_KIN , 0) , ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL48")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ISNULL(WKH.RUI_JIK_KIN , 0) , ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL49")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_JIK_ZEI AS COL50")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_JIK_ZEI AS COL51")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0) - ISNULL(WKH.TOU_JIK_ZEI , 0) AS COL52")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ISNULL(WKH.RUI_JIK_ZEI , 0) AS COL53")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0) - ISNULL(WKH.TOU_JIK_ZEI , 0) , ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL54")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ISNULL(WKH.RUI_JIK_ZEI , 0) , ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL55")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_CHU_KIN AS COL56")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_CHU_KIN AS COL57")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_CHU_ZEI AS COL58")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_CHU_ZEI AS COL59")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_GAI_KIN AS COL60")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_GAI_KIN AS COL61")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_GAI_ZEI AS COL62")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_GAI_ZEI AS COL63")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_GEN_KIN AS COL64")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_GEN_KIN AS COL65")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0) - ISNULL(WKH.TOU_GEN_KIN , 0) AS COL66")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ISNULL(WKH.RUI_GEN_KIN , 0) AS COL67")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0) - ISNULL(WKH.TOU_GEN_KIN , 0) , ISNULL(WKH.TOU_KEIY_KIN , 0) + ISNULL(WKH.TOU_KEIY_KIN_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL68")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ISNULL(WKH.RUI_GEN_KIN , 0) , ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL69")
+            'xSqlTxtSelect.AppendLine($", WKH.TOU_GEN_ZEI AS COL70")
+            'xSqlTxtSelect.AppendLine($", WKH.RUI_GEN_ZEI AS COL71")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0) - ISNULL(WKH.TOU_GEN_ZEI , 0) AS COL72")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ISNULL(WKH.RUI_GEN_ZEI , 0) AS COL73")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0) - ISNULL(WKH.TOU_GEN_ZEI , 0) , ISNULL(WKH.TOU_KEIY_ZEI , 0) + ISNULL(WKH.TOU_KEIY_ZEI_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL74")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ISNULL(WKH.RUI_GEN_ZEI , 0) , ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL75")
+            'xSqlTxtSelect.AppendLine($", WKH.KNG_KIN AS COL76")
+            'xSqlTxtSelect.AppendLine($", WKH.KNG_ZEI AS COL77")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ( ISNULL(WKH.RUI_GEN_KIN , 0) + ISNULL(WKH.KNG_KIN , 0) ) AS COL78")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ( ISNULL(WKH.RUI_GEN_KIN , 0) + ISNULL(WKH.KNG_KIN , 0) ) , ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL79")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ( ISNULL(WKH.RUI_GEN_ZEI , 0) + ISNULL(WKH.KNG_ZEI , 0) ) AS COL80")
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Round")
+            'xSqlTxtSelect.AppendLine($"( dbo.Fun_Waru")
+            'xSqlTxtSelect.AppendLine($"( ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ( ISNULL(WKH.RUI_GEN_ZEI , 0) + ISNULL(WKH.KNG_ZEI , 0) ) , ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0)")
+            'xSqlTxtSelect.AppendLine($") , 3 , 0.001")
+            'xSqlTxtSelect.AppendLine($") AS COL81")       
+            'xSqlTxtSelect.AppendLine($", dbo.Fun_Sflg_Name")
+            'xSqlTxtSelect.AppendLine($"( SUB.SFLG")
+            'xSqlTxtSelect.AppendLine($") AS COL265")
+            'xSqlTxtSelect.AppendLine($", SUB.SMSG AS COL266")
+            'xSqlTxtSelect.AppendLine($", SUB.SOPID AS COL267")
+            'xSqlTxtSelect.AppendLine($", SUB.SUSER AS COL268")
+            'xSqlTxtSelect.AppendLine($", USR2.RYAKU AS COL269")
+            'xSqlTxtSelect.AppendLine($", SUB.SHINSEI_DATE AS COL270")
+            'xSqlTxtSelect.AppendLine($", SUB.SYONIN_DATE AS COL271")
+            'xSqlTxtSelect.AppendLine($", SUB.WORK_NO AS COL272")
+            'xSqlTxtSelect.AppendLine($", SUB.WORK_SEQ AS COL273")
+            'xSqlTxtSelect.AppendLine($", SUB.RIREKI_NO AS COL274")
+            'xSqlTxtSelect.AppendLine($", SUB.RIREKI_INDEX AS COL275")
+            'xSqlTxtSelect.AppendLine($", SUB.KEN AS COL276")
+            'xSqlTxtSelect.AppendLine($", CAST(NULL AS NVARCHAR) AS COL277")
+            'xSqlTxtSelect.AppendLine($", BMN4.KAISOU AS COL278")
+            'xSqlTxtSelect.AppendLine($", BKS.RYAKU AS COL279")
+            'xSqlTxtSelect.AppendLine($", SKN.RYAKU AS COL280")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_KIN , 0) + ISNULL(WKH.RUI_KEIY_KIN_HEN , 0) - ISNULL(WKH.RUI_URI_KIN , 0) AS COL281")
+            'xSqlTxtSelect.AppendLine($", ISNULL(WKH.RUI_KEIY_ZEI , 0) + ISNULL(WKH.RUI_KEIY_ZEI_HEN , 0) - ISNULL(WKH.RUI_URI_ZEI , 0) AS COL282")
+            'Select Case True
+            '    Case condition.KOJ_SHUKEI_OPT = 0
+            '        xSqlTxtSelect.AppendLine($", CAST(NULL AS NVARCHAR) AS COL283")
+            '        xSqlTxtSelect.AppendLine($", CAST(NULL AS NVARCHAR) AS COL284")
+            '    Case Else
+            '        xSqlTxtSelect.AppendLine($", MST.EIGYO_BMN_UW AS COL283")
+            '        xSqlTxtSelect.AppendLine($", BMN5.RYAKU AS COL284")
+
+            'End Select
+            'xSqlTxtSelect.AppendLine($", MST.HACH_MOTO AS COL285")
+            'xSqlTxtSelect.AppendLine($", TOR5.RYAKU AS COL286")
+
+            xSqlTxt.AppendLine(condition.RemoveDisabledColumn(xSqlTxtSelect.ToString()))
+
+            xSqlTxt.AppendLine($"FROM")
+            xSqlTxt.AppendLine($"    SUB AS SUB")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN {W_KOJHEAD} AS WKH")
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_SKOJ   = WKH.SKOJ")
+                Case Else
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_KOJ = WKH.KOJ")
+            End Select
+
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"       AND SUB.HEAD_KOJ_UW = WKH.KOJ_UW")
+            End If
+            xSqlTxt.AppendLine($"       AND @SYSUSERNO@ = WKH.USER_NO")
+            xSqlTxt.AppendLine($"       AND @SESSION_ID@ = WKH.SESSION_ID")
+            xSqlTxt.AppendLine($"       AND @PROGRAM_CODE@ = WKH.PROGRAM_CODE")
+
+            Select Case True
+                Case condition.KOJ_SHUKEI_OPT = 0
+                    xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_SKOJ AS MST")
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_SKOJ = MST.CODE")
+                Case condition.KOJ_SHUKEI_OPT = 2
+                    xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ_UW AS MST")
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_KOJ = MST.KOJ")
+                    xSqlTxt.AppendLine($"       AND SUB.HEAD_KOJ_UW = MST.CODE")
+                    xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_SKOJ AS SKO")
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_SKOJ = SKO.CODE")
+                Case Else
+                    xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ AS MST")
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_KOJ = MST.CODE")
+                    xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_SKOJ AS SKO")
+                    xSqlTxt.AppendLine($"    ON SUB.HEAD_SKOJ = SKO.CODE")
+
+            End Select
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_TOR AS TOR1")
+            xSqlTxt.AppendLine($"    ON MST.HACH = TOR1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_BMN_UW AS BMN3")
+            xSqlTxt.AppendLine($"    ON MST.BMN_UW = BMN3.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_SYAIN AS SYA1")
+            xSqlTxt.AppendLine($"    ON MST.KOJ_TANT = SYA1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS UKEOI_KBN")
+            xSqlTxt.AppendLine($"    ON MST.UKEOI_KBN = UKEOI_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND UKEOI_KBN.COLUMN_NAME = N'KOJ.UKEOI_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_TOR AS TOR5")
+            xSqlTxt.AppendLine($"    ON MST.HACH_MOTO = TOR5.CODE")
+            If condition.KOJ_SHUKEI_OPT = 2 Then
+                xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ AS KOJ1")
+                xSqlTxt.AppendLine($"    ON SUB.HEAD_KOJ = KOJ1.CODE")
+            End If
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KAIS AS KAI1")
+            xSqlTxt.AppendLine($"    ON SUB.HEAD_KAIS = KAI1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_BMN_UW AS BMN1")
+            xSqlTxt.AppendLine($"    ON SUB.TAISYO_BMN_UW = BMN1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_BMN_UW AS BMN2")
+            xSqlTxt.AppendLine($"    ON SUB.S_BMN_UW = BMN2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KAIS AS KAI2")
+            xSqlTxt.AppendLine($"    ON SUB.KAIS = KAI2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS TS_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.TS_KBN = TS_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND TS_KBN.COLUMN_NAME = N'KMK.TS_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_BMN_UW AS BMN4")
+            xSqlTxt.AppendLine($"    ON SUB.BMN_UW = BMN4.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_BMN_KAISOU AS BKS")
+            xSqlTxt.AppendLine($"    ON BMN4.KAISOU = BKS.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KMK AS KMK1")
+            xSqlTxt.AppendLine($"    ON SUB.KMK = KMK1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS HOJ_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.HOJ_KBN = HOJ_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND HOJ_KBN.COLUMN_NAME = N'KMK.HOJ_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_HOJ AS HOJ1")
+            xSqlTxt.AppendLine($"    ON SUB.KMK = HOJ1.KMK")
+            xSqlTxt.AppendLine($"       AND SUB.HOJ = HOJ1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ AS KOJ3")
+            xSqlTxt.AppendLine($"    ON SUB.HOJ = KOJ3.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_TOR AS TOR3")
+            xSqlTxt.AppendLine($"    ON SUB.HOJ = TOR3.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_YOUSO AS YOU")
+            xSqlTxt.AppendLine($"    ON SUB.YOUSO = YOU.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ AS KOJ2")
+            xSqlTxt.AppendLine($"    ON SUB.KOJ = KOJ2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ_UW AS KJU")
+            xSqlTxt.AppendLine($"    ON SUB.KOJ = KJU.KOJ")
+            xSqlTxt.AppendLine($"       AND SUB.KOJ_UW = KJU.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KSY_SYO AS KSY")
+            xSqlTxt.AppendLine($"    ON SUB.KSY_SYO = KSY.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KSY_CHU AS KCH")
+            xSqlTxt.AppendLine($"    ON KSY.KSY_CHU = KCH.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KSY_DAI AS KDA")
+            xSqlTxt.AppendLine($"    ON KSY.KSY_DAI = KDA.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_TOR AS TOR2")
+            xSqlTxt.AppendLine($"    ON SUB.TOR = TOR2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS TOR_PAY_KBN")
+            xSqlTxt.AppendLine($"    ON TOR2.PAY_KBN = TOR_PAY_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND TOR_PAY_KBN.COLUMN_NAME = N'TOR.PAY_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_SYAIN AS SYA2")
+            xSqlTxt.AppendLine($"    ON SUB.TANT = SYA2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS UW_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.UW_KBN = UW_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND UW_KBN.COLUMN_NAME = N'KMK.UW_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_UW AS UW1")
+            xSqlTxt.AppendLine($"    ON SUB.UW_KBN = UW1.UW_KBN")
+            xSqlTxt.AppendLine($"       AND SUB.UW = UW1.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS KOJ_KMK_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.KOJ_KMK_KBN = KOJ_KMK_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND KOJ_KMK_KBN.COLUMN_NAME = N'KMK.KOJ_KMK_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS ZEI_INPUT")
+            xSqlTxt.AppendLine($"    ON SUB.ZEI_INPUT = ZEI_INPUT.CODE")
+            xSqlTxt.AppendLine($"       AND ZEI_INPUT.COLUMN_NAME = N'KMK.ZEI_INPUT'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KAZEI AS KAZ")
+            xSqlTxt.AppendLine($"    ON SUB.KAZEI = KAZ.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS KESAN_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.KESAN_KBN = KESAN_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND KESAN_KBN.COLUMN_NAME = N'DEN.KESAN_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_MEI AS MEI1")
+            xSqlTxt.AppendLine($"    ON SUB.DKBN = MEI1.CODE")
+            xSqlTxt.AppendLine($"       AND MEI1.MKBN = 5")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS M_KEIJYO_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.M_KEIJYO_KBN = M_KEIJYO_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND M_KEIJYO_KBN.COLUMN_NAME = N'DEN.M_KEIJYO_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS TORIHIKI_KBN")
+            xSqlTxt.AppendLine($"    ON SUB.TORIHIKI_KBN = TORIHIKI_KBN.CODE")
+            xSqlTxt.AppendLine($"       AND TORIHIKI_KBN.COLUMN_NAME = N'DEN.TORIHIKI_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_FUSEN AS FUS")
+            xSqlTxt.AppendLine($"    ON SUB.FUSEN = FUS.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KMK AS KMK2")
+            xSqlTxt.AppendLine($"    ON SUB.KMK_AITE = KMK2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_HOJ AS HOJ2")
+            xSqlTxt.AppendLine($"    ON SUB.KMK_AITE = HOJ2.KMK")
+            xSqlTxt.AppendLine($"       AND SUB.HOJ_AITE = HOJ2.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_KOJ AS KOJ4")
+            xSqlTxt.AppendLine($"    ON SUB.HOJ_AITE = KOJ4.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_TOR AS TOR4")
+            xSqlTxt.AppendLine($"    ON SUB.HOJ_AITE = TOR4.CODE")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS AZU_KBN1")
+            xSqlTxt.AppendLine($"    ON SUB.AZU_KBN1 = AZU_KBN1.CODE")
+            xSqlTxt.AppendLine($"       AND AZU_KBN1.COLUMN_NAME = N'DEN.AZU_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS AZU_KBN2")
+            xSqlTxt.AppendLine($"    ON SUB.AZU_KBN2 = AZU_KBN2.CODE")
+            xSqlTxt.AppendLine($"       AND AZU_KBN2.COLUMN_NAME = N'DEN.AZU_KBN'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_USER AS USR1")
+            xSqlTxt.AppendLine($"    ON SUB.UD_USER = USR1.USER_NO")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_MEI AS MEI2")
+            xSqlTxt.AppendLine($"    ON SUB.GAMEN = MEI2.CODE")
+            xSqlTxt.AppendLine($"       AND MEI2.MKBN = 6")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.T_KBN_UW AS INPUT_MODE")
+            xSqlTxt.AppendLine($"    ON SUB.INPUT_MODE = INPUT_MODE.CODE")
+            xSqlTxt.AppendLine($"       AND INPUT_MODE.COLUMN_NAME = N'DEN.INPUT_MODE'")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_USER AS USR2")
+            xSqlTxt.AppendLine($"    ON SUB.SUSER = USR2.USER_NO")
+            xSqlTxt.AppendLine($"LEFT OUTER JOIN dbo.M_SHIKIN AS SKN")
+            xSqlTxt.AppendLine($"    ON SUB.SHIKIN = SKN.CODE")
+            If condition.KOJ_SHUKEI_OPT <> 0 Then
+                xSqlTxt.AppendLine($" LEFT OUTER JOIN dbo.M_BMN_UW AS BMN5")
+                xSqlTxt.AppendLine($"   ON MST.EIGYO_BMN_UW  = BMN5.CODE")
+            End If
+            If condition.IsGetCount Then
+                xSqlTxt.AppendLine($") A")
+            End If
+            xSqlTxt.AppendLine($";")
+
+            Return ReplaceSelectSql(condition, xSqlTxt.ToString())
+
+        End Function
+
+        Public Function PG501033001Eda150(condition As AlTKyotuGenkaConditionEntity) As DataSet
+            '' 互換のための元の名前のメソッドを残しておきます。
+            ''   ※ カスタマイズプログラムから呼ばれる可能性があります。
+            Return PG501033001Eda150_SELECT(condition)
+        End Function
+
+        Public Function PG501033001Eda150_SELECT(condition As AlTKyotuGenkaConditionEntity) As DataSet
+
+            Return SelectTable(PG501033001Eda150_SELECT_SQL(condition))
+
+        End Function
+
+    End Class
+
+End Namespace
