@@ -1,0 +1,329 @@
+																																																																																			
+																																				Cột ghi No history																																															
+	ﾄﾞｷｭﾒﾝﾄ			プログラム設計書						ﾌｧｲﾙ番号			-					作  成			2022年12月2日					KIET-VS			"確
+認"																																																						
+	顧  客			花本建設株式会社						PJｺｰﾄﾞ			HA0290					更  新			2022年12月15日					KIET-SV										2　追加																																															
+	要件定義№									ｻﾌﾞﾀｲﾄﾙ			工事原価明細台帳																																																																						
+																																																																																			
+	改定履歴																																																																																		
+																																																																																			
+		№		日付				担当		内容																レビュー日付				担当																																																					
+		1		2022年12月2日				KIET-VS		Trình bày phần TKCT																-				-																																																					
+		2		2022年12月15日				KIET-VS		"Chỉnh sửa thiết kế chi tiết tại các sheet bên dưới 
+   - データ照会定義"																-				-						2　追加																																															
+		3		-				-		-																-				-																																																					
+		4		-				-		-																-				-																																																					
+		5		-				-		-																-				-																																																					
+																																																																																			
+	Thông tin TKCB																																																																																		
+																																																																																			
+		TKCT này là thiết kế chi tiết của TKCB bên dưới.																																																																																	
+		Tên file					要求定義詳細確認書_1_工事原価明細台帳.xls																																																																												
+																																																																																			
+	PG add thêm/chỉnh sửa																																																																																		
+																																																																																			
+		№		Tên PG（tên Nhật）											Class		Hình thái		Nghiệp vụ		Nội dung đối ứng																																																														
+				Tên object（tên EXE）											PG_CODE			Version																																																																	
+		1		工事原価明細台帳											照会		新規		原価		-																																																														
+				-											501033001			6.9.7.0			Version PKG nguồn duplicate：																																																														
+		2		-											-		-		-		-																																																														
+				-											-			-			Version PKG nguồn duplicate：																																																														
+		3		-											-		-		-		-																																																														
+				-											-			-			Version PKG nguồn duplicate：																																																														
+																																																																																			
+	Sơ đồ liên quan																			《OPTION》																																																															
+	PG add thêm/chỉnh sửa (chi tiết)																																	ﾃｽﾄ結果	ｴﾗｰId																																																
+																																																																																			
+		Nơi bố trí, nguồn duplicate của PG, stored v.v..  đối tượng chỉnh sửa, tạo thì như sau.																																																																																	
+		Tuy nhiên, xem xét tính tiện lợi lập trình trong giai đoạn lập trình, trường hợp có add thêm, thay đổi thì không tạo như bên dưới cũng được.																																																																																	
+																																																																																			
+		"Tên object
+(Tên Nhật)"					"Tên object
+(Tên system)"					Path source																																																																							
+		工事原価明細台帳										Nguồn get：																																																																							
+												$/hmk_花本建設/V6/01_Develop/Product/Its.Process.Musashi/WebService/ServiceCommon/Data/Windows/ALL/AlTKyotuPg127004Repository.vb																																																																							
+												Nơi bố trí：																																																																							
+												$/hmk_花本建設/V6/01_Develop/Product/Its.Process.Musashi/Windows_Hmk/ITS.Usolia.Process.Api_Hmk/Data/ALL/AlTKyotuPg501033001Repository.vb																																																																							
+																																																																																			
+																																																																																			
+	管理マスタ																																																																																		
+																																																																																			
+		Không sử dụng																																																																																	
+																																																																																			
+	名称マスタ																																																																																		
+																																																																																			
+		Không sử dụng																																																																																	
+																																																																																			
+	給与名称マスタ																																																																																		
+																																																																																			
+		Không sử dụng																																																																																	
+																																																																																			
+	Nguồn khởi động																																																																																		
+	Màn hình 1																																																																																		
+																																																																																			
+		Phương pháp khởi động					Khởi động từ menu 																																																																												
+																																																																																			
+		Trường hợp khởi động từ menu																																																																																	
+																																																																																			
+			財務			原価			業者																																																																										
+						↓																																																																													
+						入力						照会						更新																																																																	
+																																																																																			
+												･･･省略																																																																							
+												注文書発行.																																																																							
+												･･･省略																																																																							
+												工事原価明細台帳																																																																							
+																																																																																			
+			※Trình bày tại tài liệu「00_PG一覧・メニュー_HMK.xlsx」																																																																																
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+	Quyền hạn PROCES.S 																			《OPTION》																																																															
+	Màn hình 1																																																																																		
+																																																																																			
+		■Quyền hạn PG																																																																																	
+																																																																																			
+			Không có thay đổi với xử lý có sẵn 																																																																																
+																																																																																			
+		■Quyền hạn phòng ban																																																																																	
+																																																																																			
+			Không có thay đổi với xử lý có sẵn 																																																																																
+																																																																																			
+		■Quyền hạn hạng mục																																																																																	
+																																																																																			
+			Không có thay đổi với xử lý có sẵn 																																																																																
+																																																																																			
+	Chức năng PROCES.S																			《OPTION》																																																															
+	Màn hình 1																																																																																		
+																																																																																			
+		Drilldown										không có đối ứng 																																																																							
+		Setting item PG (M_PROGRAM_UW)										không có đối ứng 																																																																							
+		Data xác định history (DR_COLUMN)										không có đối ứng 																																																																							
+		WF										không có đối ứng 																																																																							
+																																																																																			
+		■Đặt hẹn																																																																																	
+																																																																																			
+			■Update tức thì																																																																																
+				Không sử dụng																																																																															
+																																																																																			
+			■Update data tức thì																																																																																
+				Không sử dụng																																																																															
+																																																																																			
+			■Update data tức thì bán hàng(販売)																																																																																
+				Không sử dụng																																																																															
+																																																																																			
+	Định nghĩa table																			《OPTION》																																																															
+	Layout																			《OPTION》																																																															
+	Màn hình 1																																																																																		
+																																																																																			
+		Size màn hình tối đa có thể sử dụng								-																																																																									
+																																																																																			
+		Trạng thái mô tả								Tài liệu tham chiếu																																																																									
+		Có mô tả								Sheet：「問合せイメージ」、「帳票イメージ」																																																																									
+																																																																																			
+	Menu bar																			《OPTION》																																																															
+	Màn hình 1																																																																																		
+																																																																																			
+		Không sử dụng																																																																																	
+																																																																																			
+	Màn hình 2																																																																																		
+																																																																																			
+		Không sử dụng																																																																																	
+																																																																																			
+	Function key																			《OPTION》																																																															
+	Màn hình 1																																																																																		
+																																																																																			
+		Không có thay đổi với xử lý có sẵn 																																																																																	
+																																																																																			
+	Màn hình 2																																																																																		
+																																																																																			
+		Không sử dụng																																																																																	
+																																																																																			
+	Định nghĩa item																			Input・Batch・Màn hình chỉ thị・Search《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Có mô tả 								Sheet：問合せイメージ																																																																									
+																																																																																			
+	Định nghĩa màn hình search																			Input・Batch・Màn hình chỉ thị・Search《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Không có mô tả								-																																																																									
+																																																																																			
+	Định nghĩa trạng thái màn hình																			Input・Batch・Màn hình chỉ thị・Search																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Không có mô tả								-																																																																									
+																																																																																			
+	Định nghĩa truy vấn data																			《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Có mô tả 								Sheet：データ照会定義																																																																									
+																																																																																			
+	Định nghĩa message																			《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Có mô tả 								Sheet：メッセージ定義																																																																									
+																																																																																			
+	Định nghĩa data kế toán (仕訳データ)																			Tạo kế toán《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Không có mô tả								-																																																																									
+																																																																																			
+	Điều kiện chỉ thị																			Truy vấn common																																																															
+																																																																																			
+		Trạng thái mô tả								参照資料																																																																									
+		Có mô tả 								Sheet：指示条件																																																																									
+																																																																																			
+	Setting cột																			Truy vấn common《OPTION》																																																															
+																																																																																			
+		Code					Name												Tài liệu trình bày setting																																																																
+		0					工事原価明細台帳												プログラム設計書_01_工事原価明細台帳_列設定仕様.xlsx																																																																
+																																																																																			
+	File ngoại bộ sử dụng (file RPX, EXCEL template chẳng hạn)																			Report, output EXCEL《OPTION》																																																															
+	Các loại setting report																			Truy vấn common, report, output EXCEL《OPTION》																																																															
+	Bối cảnh																																																																																		
+																																																																																			
+		Tạo sổ cái chi tiết giá thành công trình (工事原価明細台帳) mà đã sử dụng tại system cũ cho PROCES.S.																																																																																	
+																																																																																			
+	Điều kiện tiền đề																																																																																		
+																																																																																			
+		Cho phạm vi tháng năm đã chỉ định là tháng này để output chi tiết. 																																																																																	
+		Cho là không output tổng tháng (月計) như sổ cái công trình (工事台帳).																																																																																	
+		Vì cho class tổng kết công trình (工事集計区分) là có thể chỉ định theo công trình tổng kết (集計工事別)・theo công trình (工事別)・theo chi tiết công trình (工事詳細別) nên cho là theo như chỉ thị của package.																																																																																	
+		Không cho phép chọn chỉ định giá thành công trình (工事原価) , luôn output số tiền của cả số tiền chi xuất công trình chưa hoàn thành (未成工事支出金)・giá thành công trình hoàn thành (完成工事原価).																																																																																	
+		Cho là không sử dụng tính toán báo giá (見積計上)																																																																																	
+																																																																																			
+	Yêu cầu chỉ thị																																																																																		
+																																																																																			
+		VD output																																																																																	
+																																																																																			
+		Chi tiết kế toán (thu mua) (仕訳明細(仕入）)																																																																																	
+		工事コード			工事詳細ｺｰﾄﾞ			伝票年月日			伝票番号		科目			原価要素			業者コード			摘要			貸借区分		金額			消費税																																																					
+		202018			1			5/31			546		161			521			10174 			山砂			1借方		32,000 			3,200 																																																					
+		202018			1			5/31			557		161			521			10184 			識別ﾃｰﾌﾟ			1借方		8,140 			814 																																																					
+		202018			1			5/31			571		162			521			10413 			ﾊﾟﾈｺｰﾄ			1借方		3,100 			310 																																																					
+		202018			1			5/31			613		521			521			19999 			㈲ｲｽﾞﾐ建材 三基興業 山砂			2貸方		32,000 			3,200 																																																					
+		202018			1			5/31			613		521			521			19999 			昭和木材 三基興業 ﾊﾟﾈｺｰﾄ			2貸方		3,100 			310 																																																					
+		202018			1			6/30			560		521			521			10181 			生ｺﾝ			1借方		21,688 			2,169 																																																					
+		202018			1			6/30			577		521			521			10174 			山砂他			1借方		103,500 			10,350 																																																					
+		202018			1			6/30			581		521			521			10172 			排水ﾌﾘｭｰﾑ他			1借方		2,018,800 			201,880 																																																					
+		202018			1			6/30			622		521			521			19999 			㈲ｲｽﾞﾐ建材 三基興業 山砂他			2貸方		103,500 			10,350 																																																					
+		202018			1			6/30			622		521			521			19999 			仙南ｶｲﾊﾂ商事㈱ 三基興業 生ｺﾝ			2貸方		21,688 			2,169 																																																					
+		202018			1			6/30			622		521			521			19999 			㈱同和建材 三基興業 排水ﾌﾘｭｰﾑ他			2貸方		2,018,800 			201,880 																																																					
+		202018			1			7/30			612		521			521			10181 			生ｺﾝ			1借方		267,675 			26,768 																																																					
+																																																																																			
+		Group theo yếu tố giá thành (原価要素) để Output lũy kế cho đến tháng trước (前月迄累計)・tổng hạng mục (科目計)																																																																																	
+		Output tổng công trình (工事計) của mỗi công trình tại dòng cuối cùng.																																																																																	
+																																																																																			
+		Trường hợp đã output tháng năm từ tháng 6～tháng 7																																																																																	
+		工事コード			工事詳細ｺｰﾄﾞ			伝票年月日			伝票番号		業者コード			摘要			借方金額			貸方金額			原価金額			消費税		合計																																																					
+		521　材料費																																																																																	
+		202018			1											前月迄累計			43,240			35,100 			8,140			814		8,954																																																					
+		202018			1			6/30			560		10181 			生ｺﾝ			21,688			0			21,688			2,169		23,857																																																					
+		202018			1			6/30			577		10174 			山砂他			103,500			0			103,500			10,350		113,850																																																					
+		202018			1			6/30			581		10172 			排水ﾌﾘｭｰﾑ他			2,018,800			0			2,018,800			201,880		2,220,680																																																					
+		202018			1			6/30			622		19999 			㈲ｲｽﾞﾐ建材 三基興業 山砂他			0			103,500			-103,500			-10,350		-113,850																																																					
+		202018			1			6/30			622		19999 			仙南ｶｲﾊﾂ商事㈱ 三基興業 生ｺﾝ			0			21,688			-21,688			-2,169		-23,857																																																					
+		202018			1			6/30			622		19999 			㈱同和建材 三基興業 排水ﾌﾘｭｰﾑ他			0			2,018,800			-2,018,800			-201,880		-2,220,680																																																					
+		202018			1			7/30			612		10181 			生ｺﾝ			267,675			0			267,675			26,768		294,443																																																					
+		202018			1											科目計			2,454,903			2,179,088			275,815			27,582		303,397																																																					
+		202018			1											工事計			2,454,903			2,179,088			275,815			27,582		303,397																																																					
+																																																																																			
+																																																																																			
+		Trường hợp không phát sinh tháng này tại trường hợp không có chi tiết voucher của tháng 6～tháng ７（chi tiết màu trắng ghi trên), trường hợp đã bắt đầu truy vấn dưới dạng「không in (印刷しない)」																																																																																	
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+		※「Trường hợp không phát sinh tháng này」 là biểu thị trường hợp không có phát sinh chi tiết theo đơn vị class tổng kết công trình (工事集計区分単位) mà đã được chỉ thị.																																																																																	
+		Trường hợp không có phát sinh tháng này tại trường hợp không có chi tiết voucher của tháng 6～tháng ７（chi tiết màu trắng ghi trên), trường hợp đã bắt đầu truy vấn dưới dạng 「in (印刷する)」																																																																																	
+		工事コード			工事詳細ｺｰﾄﾞ			伝票年月日			伝票番号		業者コード			摘要			借方金額			貸方金額			原価金額			消費税		合計																																																					
+		521　材料費																																																																																	
+		202018			1											前月迄累計			43,240			35,100			8,140			814		8,954																																																					
+		202018			1											科目計			43,240			35,100			8,140			814		8,954																																																					
+		202018			1											工事計			43,240			35,100			8,140			814		8,954																																																					
+		※Dòng tổng yếu tố (nền màu vàng ở bảng trên) là dòng tổng kết setting cột của màn hình truy vấn. Không cho hiển thị tổng số tiền vì không được tổng kết riêng chỉ dòng chi tiết.																																																																																	
+		Font ・size ký tự																																																																																	
+			Cho toàn bộ font là MSゴシック và size là 9Pt.																																																																																
+			Cột số tiền （số tiền bên nợ (借方金額)・số tiền bên có (貸方金額)・số tiền giá thành (原価金額)・thuế tiêu thụ (消費税)・total (合計)） thì tiến hành điều chỉnh theo chiều rộng để chứa 12 ký tự.																																																																																
+																																																																																			
+		※Hiển thị thêm class tính  thuế (課税区分) ・tỷ lệ thuế (税率) tại item hiển thị của chi tiết.																																																																																	
+																																																																																			
+	Outline xử lý PG																																																																																		
+																																																																																			
+																																																																																			
+		Tham chiếu sheet：「処理詳細【画面名】」																																																																																	
+																																																																																			
+	List PG tham chiếu																			《OPTION》																																																															
+																																																																																			
+		Tên PG・file								TFS											Note																																																														
+		AlTKyotuPg127004Repository.vb								$/hmk_花本建設/V6/01_Develop/Product/Its.Process.Musashi/WebService/ServiceCommon/Data/Windows/ALL/AlTKyotuPg127004Repository.vb											Tham khảo xử lý của package																																																														
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+	Data init　※V6																																																																																		
+																																																																																			
+		Its.Process.UsoliaMvc																																																																																	
+			Tên table								Có cần không				Note																																																																				
+			Programs								○				-																																																																				
+			Menu								○				-																																																																				
+			ToiawaseDefinations								○				-																																																																				
+			ToiawaseSearchPanels								○				-																																																																				
+			ToiawaseReportProperties								○				-																																																																				
+			ToiawaseProperties								○				-																																																																				
+			ToiawaseColumnProperties								○				-																																																																				
+			ToiawaseConditions								-				-																																																																				
+			ToiawaseConditionValues								-				-																																																																				
+			ToiawaseConditionDates								-				-																																																																				
+																																																																																			
+		Its.Process.ProcessProxy																																																																																	
+			Tên table								Có cần không				Note																																																																				
+			M_PROGRAM_EXTENSION								○				-																																																																				
+			T_MENU_EXTENSION								○				-																																																																				
+			M_PROGRAM_UW								-				-																																																																				
+			T_PROGRAM_LINK								-				-																																																																				
+			T_SQL								-				-																																																																				
+			T_SQL_UW								-				-																																																																				
+			T_SEARCH								-				-																																																																				
+			T_SEARCH_COL								-				-																																																																				
+			M_PROGRAM_REPORT_FILE								-				-																																																																				
+																																																																																			
+		Its.Process.Process																																																																																	
+			Tên table								Có cần không				Note																																																																				
+			T_PROPERTY								-				-																																																																				
+			T_PROPERTY_COL								-				-																																																																				
+			M_LINE								-				-																																																																				
+			M_BMN_PATTERN								-				-																																																																				
+			M_BMN_PATTERN_BMN								-				-																																																																				
+			M_BMN_PATTERN_UW								-				-																																																																				
+																																																																																			
+		Data màn hình search																																																																																	
+			Tên table								Có cần không				Path																																																																				
+			SqlText.xml								-				-																																																																				
+															Note																																																																				
+															-																																																																				
+																																																																																			
+	Data init　※V5																																																																																		
+	Phương pháp tạo data test																			《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								Tài liệu tham chiếu																																																																									
+		Không có mô tả								-																																																																									
+																																																																																			
+	Bổ sung																			《OPTION》																																																															
+																																																																																			
+		Trạng thái mô tả								Tài liệu tham chiếu																																																																									
+		Không có mô tả								-																																																																									
+																																																																																			
+	Hạng mục đặc biệt																			《OPTION》																																																															
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
+																																																																																			
